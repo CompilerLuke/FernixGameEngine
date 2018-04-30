@@ -6,14 +6,7 @@
 
 #include <vector>
 
-// Default camera values
-float YAW = -90.0f;
-float PITCH = 0.0f;
-float SPEED = 2.5f;
-float SENSITIVITY = 0.1f;
-float ZOOM = 45.0f;
-
-Camera::Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
 	Position = position;
 	WorldUp = up;
@@ -52,7 +45,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 }
 
 // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
 {
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
