@@ -122,7 +122,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Desktop\Game Engine\glad (2)\src\glad.c" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Render.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
@@ -132,6 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>

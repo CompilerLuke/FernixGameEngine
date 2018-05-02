@@ -14,7 +14,6 @@
 
 #include "Camera.h"
 
-
 namespace fs = std::experimental::filesystem;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -255,14 +254,18 @@ int main()
 
 		ourShader.setMat4("model", model);
 		ourShader.setMat4("normalModel", normalModel);
-		ourShader.setVec3("lightColor", lightColor);
-		ourShader.setVec3("lightDirection", lightDirection);
-		 
+		ourShader.setVec3("viewPos", camera.Position);
+
+		ourShader.setVec3("material.specular", glm::vec3(0.2f, 0.2f, 0.2f));
+		ourShader.setFloat("material.shininess", 32.0f);
+		
+		ourShader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		ourShader.setVec3("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f)); // darken the light a bit to fit the scene
+		ourShader.setVec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+		ourShader.setVec3("light.direction", lightDirection);
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		ourShader.use();
 
 		glm::mat4 planeModel = glm::mat4(1.0f);
 		planeModel = glm::translate(planeModel, glm::vec3(0.0f, 4.5f, 0));
@@ -273,10 +276,7 @@ int main()
 		planeNormalModel = glm::rotate(planeNormalModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	
 		ourShader.setMat4("model", planeModel);
-		ourShader.setVec3("lightColor", lightColor);
-		ourShader.setVec3("lightDirection", lightDirection);
 		ourShader.setMat4("normalModel", planeNormalModel);
-
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

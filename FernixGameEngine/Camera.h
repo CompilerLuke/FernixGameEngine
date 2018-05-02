@@ -42,11 +42,16 @@ public:
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
 	glm::mat4 GetViewMatrix();
+	glm::mat4 GetProjectionMatrix();
+
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
 	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 	void ProcessMouseScroll(float yoffset);
+	
 private:
+	glm::mat4 projection;
+
 	void updateCameraVectors();
 };
 
