@@ -23,10 +23,8 @@ Entity::Entity() {
 	transform = Transform();
 }
 
-void Entity::mouse_callback(GLFWwindow *window, double xpos, double ypos) {};
-void Entity::scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {};
-void Entity::processInput(GLFWwindow *window) {};
 void Entity::update(float deltaTime) {};
+void Entity::render() {};
 
 Entity::~Entity()
 {

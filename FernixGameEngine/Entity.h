@@ -22,12 +22,9 @@ public:
 	float deltaTime;
 	Transform transform;
 
-	virtual void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-	virtual void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-	virtual void processInput(GLFWwindow *window);
 	virtual void update(float deltaTime);
+	virtual void render();
 
-private:
 	Entity(Transform transform);
 	Entity();
 	~Entity();

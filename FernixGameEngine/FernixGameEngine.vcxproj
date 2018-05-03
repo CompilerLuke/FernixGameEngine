@@ -78,6 +78,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>C:\Users\User\Desktop\Game Engine\OpenGl libraries and headers\Libs\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -121,8 +122,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Desktop\Game Engine\glad (2)\src\glad.c" />
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -133,8 +136,10 @@
     <Text Include="VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
