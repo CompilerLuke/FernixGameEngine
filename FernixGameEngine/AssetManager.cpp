@@ -1,5 +1,5 @@
 #include "AssetManager.h"
-
+#include <iostream>
 
 
 AssetManager::AssetManager()
@@ -37,10 +37,11 @@ std::string AssetManager::absolute(const std::string& path) {
 
 Option AssetManager::loadTexture(const std::string& path) {
 	std::string abs_path = absolute(path);
+
 	for (unsigned int i = 0; i < resources.size(); i++) {
 		if (resources[i].filepath == abs_path) {
-			Option result = { "", resources[i].ID };
-			return result;
+			Resource resource = { resources[i].ID, abs_path, ResourceType::Texture2D };
+			return { "", resource };
 		}
 	}
 
@@ -75,8 +76,9 @@ Option AssetManager::loadTexture(const std::string& path) {
 
 	Resource resource = { 0, abs_path, ResourceType::Texture2D };
 
+	std::string errorMessage = ("Failed to load texture '" + path + "', '" + abs_path + "'");
 
-	return { "Failed to load texture '" + path + "', '" + abs_path + "'", resource };
+	return { errorMessage, resource };
 }
 
 AssetManager::~AssetManager()

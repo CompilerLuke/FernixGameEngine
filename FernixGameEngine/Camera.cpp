@@ -5,6 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
+#include "Input.h"
+#include <iostream>
+
+extern Input input;
 
 Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
@@ -25,48 +29,38 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	updateCameraVectors();
 }
 
-// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
-glm::mat4 Camera::GetViewMatrix()
-{
-	return glm::lookAt(Position, Position + Front, Up);
-}
-
-// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
-{
+void Camera::update(float deltaTime) {
 	float velocity = MovementSpeed * deltaTime;
-	if (direction == FORWARD)
-		Position += Front * velocity;
-	if (direction == BACKWARD)
-		Position -= Front * velocity;
-	if (direction == LEFT)
-		Position -= Right * velocity;
-	if (direction == RIGHT)
-		Position += Right * velocity;
-}
+	if (input.keyDown('w'))
+		this->transform.position += Front * velocity;
+	if (input.keyDown('s'))
+		this->transform.position -= Front * velocity;
+	if (input.keyDown('a'))
+		this->transform.position  -= Right * velocity;
+	if (input.keyDown('d'))
+		this->transform.position += Right * velocity;
 
-// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
-{
-	xoffset *= MouseSensitivity;
-	yoffset *= MouseSensitivity;
+	float xoffset = input.mouse_offset.x;
+	float yoffset = input.mouse_offset.y;
 
 	Yaw += xoffset;
 	Pitch += yoffset;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (Pitch > 89.0f)
-			Pitch = 89.0f;
-		if (Pitch < -89.0f)
-			Pitch = -89.0f;
-	}
+
+	if (Pitch > 89.0f)
+		Pitch = 89.0f;
+	if (Pitch < -89.0f)
+		Pitch = -89.0f;
+
+	this->transform.rotation.y = Yaw;
+	this->transform.rotation.x = Pitch;
 
 	// Update Front, Right and Up Vectors using the updated Euler angles
 	updateCameraVectors();
 }
 
+/*
 // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
 void Camera::ProcessMouseScroll(float yoffset)
 {
@@ -77,6 +71,7 @@ void Camera::ProcessMouseScroll(float yoffset)
 	if (Zoom >= 45.0f)
 		Zoom = 45.0f;
 }
+*/
 
 void Camera::updateCameraVectors()
 {

@@ -5,7 +5,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <GLFW/glfw3.h>
-#include "Render.h"
+
+class Shader;
+class Render;
+class Camera;
 
 class Transform {
 public:
@@ -23,10 +26,11 @@ public:
 	Transform transform;
 
 	virtual void update(float deltaTime);
-	virtual void render();
+	virtual void render(Camera& camera);
 
 	Entity(Transform transform);
 	Entity();
-	~Entity();
+	void SetShaderProps(Shader& shader, Camera& camera);
+	virtual ~Entity();
 };
 

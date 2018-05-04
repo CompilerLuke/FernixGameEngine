@@ -9,6 +9,9 @@ float lastFrame = 0.0f; // Time of last frame
 
 //render doesnt initialize window
 
+class Entity;
+class Camera;
+
 Render::Render()
 {
 	glEnable(GL_DEPTH_TEST);
@@ -24,15 +27,15 @@ void Render::RenderFrame() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	glm::mat4 projection = camera.GetProjectionMatrix();
-	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 projection = camera->GetProjectionMatrix();
+	glm::mat4 view = camera->transform.modelMatrix();
 
-	for (int i = 0; i < entities.size; i++) {
+	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->update(deltaTime);
 	}
 
-	for (int i = 0; i < entities.size; i++) {
-		entities[i]->render();
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->render(*camera);
 	}
 }
 

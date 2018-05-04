@@ -4,17 +4,22 @@
 #include <glm/glm.hpp>
 #include "render.h"
 
-namespace Input {
+class Input 
+{
+public:
 	glm::vec2 mouse_position = glm::vec2(0.0f, 0.0f);
-	float scroll_offset;
+	glm::vec2 mouse_offset = glm::vec2(0.0f, 0.0f);
+	float scroll_offset = 0;
 
 	bool firstMouse = true;
 	GLFWwindow* window;
 
-	void Init(Render render, GLFWwindow* _window);
-
 	void captureMouse();
-	void mouseCallback(GLFWwindow* window, double xpos, double ypos);
-	void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	bool keyDown(char key);
 	bool keyDown(int key);
-}
+
+	Input(Render render, GLFWwindow* _window);
+	void Init(Render render, GLFWwindow* _window);
+	Input();
+	~Input();
+};
