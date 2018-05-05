@@ -17,8 +17,8 @@
 #include "Input.h"
 #include "AssetManager.h"
 
-int SCR_WIDTH = 2000;
-int SCR_HEIGHT = 1800;
+int SCR_WIDTH = 3840;
+int SCR_HEIGHT = 2160;
 
 Input input;
 Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
@@ -76,6 +76,7 @@ public:
 	Resource texture;
 	unsigned int VBO, VAO;
 	Shader ourShader;
+	int numberOfPolygons = 36;
 
 	Cube() : Entity(), ourShader("VertexShader.vert", "FragmentShader.frag") {
 		glGenVertexArrays(1, &VAO);
@@ -106,9 +107,6 @@ public:
 		std::cout << texture.ID << std::endl;
 	}
 
-	void update(float deltaTime) override {
-	}
-
 	void render(Camera& camera) override {
 		// bind Texture
 		glActiveTexture(texture.ID);
@@ -120,7 +118,7 @@ public:
 
 		// camera/view transformation
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawArrays(GL_TRIANGLES, 0, numberOfPolygons);
 	}
 
 	~Cube() {
@@ -144,7 +142,7 @@ int main()
 
 														 // glfw window creation
 														 // --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fernix", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fernix", glfwGetPrimaryMonitor(), NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -163,11 +161,18 @@ int main()
 	}
 
 	Cube cube;
+	Cube plane;
+	plane.numberOfPolygons = 6;
+	plane.transform.scale = glm::vec3(10.0f, 10.0f, 10.0f);
+	plane.transform.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	plane.transform.position.y -= 5.5f;
 
 	Render renderer;
 	renderer.camera = &camera;
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
+	renderer.AddEntity(&plane);
+
 
 	//initialize input
 	input.Init(renderer, window);

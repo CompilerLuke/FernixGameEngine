@@ -19,7 +19,7 @@ enum Camera_Movement {
 static const float YAW = -90.0f;
 static const float PITCH = 0.0f;
 static const float SPEED = 4.0f;
-static const float SENSITIVITY = 0.02f;
+static const float SENSITIVITY = 0.01f;
 static const float ZOOM = 45.0f;
 
 class Camera : public Entity
