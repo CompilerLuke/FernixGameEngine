@@ -19,7 +19,7 @@ enum Camera_Movement {
 static const float YAW = -90.0f;
 static const float PITCH = 0.0f;
 static const float SPEED = 4.0f;
-static const float SENSITIVITY = 0.05f;
+static const float SENSITIVITY = 0.02f;
 static const float ZOOM = 45.0f;
 
 class Camera : public Entity
@@ -39,11 +39,11 @@ public:
 	float MouseSensitivity;
 	float Zoom;
 
-	Camera(float SCR_WIDTH=2000, float SCR_HEIGHT=1800, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+	Camera(float SCR_WIDTH=2000, float SCR_HEIGHT=1800, glm::vec3 position = glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-
 	glm::mat4 GetProjectionMatrix();
+	glm::mat4 GetViewMatrix();
 
 	void update(float deltaTime) override;
 	

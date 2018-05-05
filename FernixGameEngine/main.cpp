@@ -21,7 +21,7 @@ int SCR_WIDTH = 2000;
 int SCR_HEIGHT = 1800;
 
 Input input;
-Camera camera(SCR_WIDTH, SCR_HEIGHT);
+Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -144,7 +144,7 @@ int main()
 
 														 // glfw window creation
 														 // --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fernix", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -171,6 +171,7 @@ int main()
 
 	//initialize input
 	input.Init(renderer, window);
+	input.captureMouse();
 
 	//directional light information
 
@@ -183,6 +184,8 @@ int main()
 
 		// render
 		// ------
+		glfwPollEvents();
+
 		renderer.Clear();
 
 		// render container
@@ -193,7 +196,6 @@ int main()
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.

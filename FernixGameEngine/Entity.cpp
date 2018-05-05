@@ -11,10 +11,10 @@
 glm::mat4 Transform::modelMatrix() {
 	glm::mat4 matrix = glm::mat4(1.0f);
 	matrix = glm::scale(matrix, scale);
-	matrix = glm::mat4_cast(rotation) * matrix;
+	matrix *= glm::mat4_cast(rotation);
 	matrix = glm::translate(matrix, position);
 
-	std::cout << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
+	//std::cout << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
 
 	return matrix; //check if this doesnt cause some kind of scope error
 }
@@ -30,7 +30,7 @@ Entity::Entity() {
 
 void Entity::SetShaderProps(Shader& shader, Camera& camera) {
 	
-	glm::mat4 view = camera.transform.modelMatrix();
+	glm::mat4 view = camera.GetViewMatrix();
 	shader.setMat4("view", view);
 
 	glm::mat4 model = this->transform.modelMatrix();
@@ -40,7 +40,7 @@ void Entity::SetShaderProps(Shader& shader, Camera& camera) {
 	glm::vec3 lightDirection(0.7f, 0.7f, 0.0f);
 
 	shader.setMat4("model", model);
-	shader.setMat4("normalModel", normalModel);
+	shader.setMat3("normalModel", normalModel);
 	shader.setVec3("viewPos", camera.transform.position);
 	shader.setMat4("projection", camera.GetProjectionMatrix());
 

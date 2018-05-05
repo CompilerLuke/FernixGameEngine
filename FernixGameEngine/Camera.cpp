@@ -18,6 +18,7 @@ Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 
 	Pitch = pitch;
 	projection = glm::perspective(glm::radians(Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	updateCameraVectors();
+	this->transform.position = position;
 }
 
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
@@ -26,25 +27,27 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	WorldUp = glm::vec3(upX, upY, upZ);
 	Yaw = yaw;
 	Pitch = pitch;
+	this->transform.position = Position;
 	updateCameraVectors();
 }
 
 void Camera::update(float deltaTime) {
 	float velocity = MovementSpeed * deltaTime;
-	if (input.keyDown('w'))
+	if (input.keyDown(GLFW_KEY_W)) {
 		this->transform.position += Front * velocity;
-	if (input.keyDown('s'))
+	}
+	if (input.keyDown(GLFW_KEY_S))
 		this->transform.position -= Front * velocity;
-	if (input.keyDown('a'))
+	if (input.keyDown(GLFW_KEY_A))
 		this->transform.position  -= Right * velocity;
-	if (input.keyDown('d'))
+	if (input.keyDown(GLFW_KEY_D))
 		this->transform.position += Right * velocity;
 
 	float xoffset = input.mouse_offset.x;
 	float yoffset = input.mouse_offset.y;
 
-	Yaw += xoffset;
-	Pitch += yoffset;
+	Yaw = xoffset * MouseSensitivity;
+	Pitch = yoffset * MouseSensitivity;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
 
@@ -53,9 +56,8 @@ void Camera::update(float deltaTime) {
 	if (Pitch < -89.0f)
 		Pitch = -89.0f;
 
-	this->transform.rotation.y = Yaw;
-	this->transform.rotation.x = Pitch;
-
+	this->transform.rotation = glm::angleAxis(glm::radians(90.f), glm::vec3(Pitch / 90.0f, Yaw / 90.0f, 0.f));
+	
 	// Update Front, Right and Up Vectors using the updated Euler angles
 	updateCameraVectors();
 }
@@ -84,6 +86,11 @@ void Camera::updateCameraVectors()
 	// Also re-calculate the Right and Up vector
 	Right = glm::normalize(glm::cross(Front, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	Up = glm::normalize(glm::cross(Right, Front));
+}
+
+glm::mat4 Camera::GetViewMatrix()
+{
+	return glm::lookAt(this->transform.position, this->transform.position + Front, Up);
 }
 
 glm::mat4 Camera::GetProjectionMatrix() {
