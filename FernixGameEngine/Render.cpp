@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Input.h"
+#include <iostream>
 
 //timing
 float deltaTime = 0.0f;	// Time between current frame and last frame
@@ -15,6 +16,7 @@ class Camera;
 Render::Render()
 {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_MULTISAMPLE);
 }
 
 void Render::Clear() {

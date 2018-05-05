@@ -135,6 +135,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
@@ -142,7 +143,10 @@ int main()
 
 														 // glfw window creation
 														 // --------------------
+	
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fernix", glfwGetPrimaryMonitor(), NULL);
+	
+
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -151,7 +155,7 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
+	
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -159,6 +163,8 @@ int main()
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+	
+	glEnable(GL_MULTISAMPLE);
 
 	Cube cube;
 	Cube plane;
@@ -179,14 +185,11 @@ int main()
 	input.captureMouse();
 
 	//directional light information
-
 	
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
 	{
-
-
 		// render
 		// ------
 		glfwPollEvents();
