@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include "render.h"
 
+class Window;
+
 class Input 
 {
 public:
@@ -12,14 +14,17 @@ public:
 	float scroll_offset = 0;
 
 	bool firstMouse = true;
-	GLFWwindow* window;
 
-	void captureMouse();
+	Window* window;
+
+	void captureMouse(bool);
 	bool keyDown(char key);
 	bool keyDown(int key);
 
-	Input(Render render, GLFWwindow* _window);
-	void Init(Render render, GLFWwindow* _window);
 	Input();
+	void ScrollCallback(double xpos, double ypos);
+	void CursorPosCallback(double xpos, double ypos);
+	void Init(Window* window);
+
 	~Input();
 };

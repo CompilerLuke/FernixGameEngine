@@ -5,62 +5,58 @@
 #include "render.h"
 #include <vector>
 #include "Input.h"
+#include "Window.h"
 #include <iostream>
 
-void Input::captureMouse() {
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+void Input::captureMouse(bool capture) {
+	window->captureMouse(capture);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Input::Input() {}
 
-void mouseCallback(GLFWwindow* window, double xpos, double ypos)
+void Input::CursorPosCallback(double xpos, double ypos)
 {
-	Input* self = (Input*)glfwGetWindowUserPointer(window);
-	
-	if (self->firstMouse)
+	if (this->firstMouse)
 	{
-		self->mouse_position.x = xpos;
-		self->mouse_position.y = ypos;
-		self->firstMouse = false;
+		this->mouse_position.x = xpos;
+		this->mouse_position.y = ypos;
+		this->firstMouse = false;
 	}
 
-	float xoffset = xpos - self->mouse_position.x;
-	float yoffset = self->mouse_position.y - ypos; // reversed since y-coordinates go from bottom to top
+	float xoffset = xpos - this->mouse_position.x;
+	float yoffset = this->mouse_position.y - ypos; // reversed since y-coordinates go from bottom to top
 
-	self->mouse_offset.x += xoffset;
-	self->mouse_offset.y += yoffset;
+	this->mouse_offset.x += xoffset;
+	this->mouse_offset.y += yoffset;
 
-	self->mouse_position.x = xpos;
-	self->mouse_position.y = ypos;
+	this->mouse_position.x = xpos;
+	this->mouse_position.y = ypos;
 }
 
-void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void Input::ScrollCallback(double xoffset, double yoffset)
 {
-	Input* self = (Input*)glfwGetWindowUserPointer(window);
-	self->scroll_offset = yoffset;
+	this->scroll_offset = yoffset;
 }
 
 bool Input::keyDown(char keyS) {
-	int key = glfwGetKey(window, keyS);
-	return glfwGetKey(window, key) == GLFW_PRESS;
+	return window->getKeyDown(keyS);
 }
 
 bool Input::keyDown(int key) {
-	return glfwGetKey(window, key) == GLFW_PRESS;
+	return window->getKeyDown(key);
 }
 
-Input::Input(Render render, GLFWwindow* _window) {
-	this->Init(render, _window);
+Input::Input() {
 }
 
-void Input::Init(Render render, GLFWwindow* _window) {
-	window = _window;
+void Input::Init(Window* window) {
+	this->window = window;
+	mouse_position = glm::vec2(window->SCR_WIDTH / 2.0f, window->SCR_HEIGHT / 2.0f);
 
-	mouse_position = glm::vec2(render.SCR_WIDTH / 2.0f, render.SCR_HEIGHT / 2.0f);
-
-	glfwSetWindowUserPointer(window, this);
-	glfwSetCursorPosCallback(window, mouseCallback);
-	glfwSetScrollCallback(window, scrollCallback);
+	//glfwSetWindowUserPointer(window, this);
+	//glfwSetCursorPosCallback(window, mouseCallback);
+	//glfwSetScrollCallback(window, scrollCallback);
 }
 
 Input::~Input() {}

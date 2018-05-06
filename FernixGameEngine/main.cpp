@@ -15,12 +15,16 @@
 #include "Camera.h"
 #include "Render.h"
 #include "Input.h"
+#include "Window.h"
 #include "AssetManager.h"
 
 int SCR_WIDTH = 3840;
 int SCR_HEIGHT = 2160;
 
+const char* title = (char *) "Fernix";
+
 Input input;
+Window window(title, &input, SCR_WIDTH, SCR_HEIGHT);
 Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -115,10 +119,19 @@ public:
 		ourShader.use();
 
 		this->SetShaderProps(ourShader, camera);
+	
+		if (numberOfPolygons == 6) {
+			ourShader.setVec2("transformUVs", glm::vec2(5.0f, 5.0f));
+		}
+		else {
+			ourShader.setVec2("transformUVs", glm::vec2(1.0f, 1.0f));
+		}
 
 		// camera/view transformation
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, numberOfPolygons);
+
+		
 	}
 
 	~Cube() {
@@ -210,15 +223,6 @@ int main()
 	// ------------------------------------------------------------------
 	glfwTerminate();
 	return 0;
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	// make sure the viewport matches the new window dimensions; note that width and 
-	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, width, height);
 }
 
 

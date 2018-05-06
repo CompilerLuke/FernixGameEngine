@@ -108,6 +108,11 @@ void Shader::setVec3(const std::string &name, const glm::vec3 &vec) const {
 	glUniform3fv(loc, 1, glm::value_ptr(vec));
 }
 
+void Shader::setVec2(const std::string &name, const glm::vec2 &vec) const {
+	unsigned int loc = glGetUniformLocation(ID, name.c_str());
+	glUniform2fv(loc, 1, glm::value_ptr(vec));
+}
+
 void Shader::checkCompileErrors(unsigned int shader, std::string type)
 {
 	int success;

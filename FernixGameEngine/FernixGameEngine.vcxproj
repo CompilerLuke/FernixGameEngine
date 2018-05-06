@@ -130,6 +130,7 @@
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentShader.frag" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg" />
