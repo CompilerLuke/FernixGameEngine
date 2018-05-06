@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <stdexcept>
+#include <iostream>
 
 #include "Input.h"
 
@@ -11,7 +12,6 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	Input* input = (Input*)glfwGetWindowUserPointer(window);
 	input->CursorPosCallback(xpos, ypos);
 }
-
 
 void scrollCallback(GLFWwindow* window, double xpos, double ypos) {
 	Input* input = (Input*)glfwGetWindowUserPointer(window);
@@ -40,7 +40,6 @@ void Window::Init() {
 	// glfw window creation
 	// --------------------
 
-	GLFWwindow* window;
 	if (fullscreen) {
 		window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, title, glfwGetPrimaryMonitor(), NULL);
 	}
@@ -54,19 +53,26 @@ void Window::Init() {
 		throw std::runtime_error("Failed to create GLFW window");
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	glfwSetCursorPosCallback(this->window, cursorPosCallback);
-	glfwSetScrollCallback(window, scrollCallback);
-
+	
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		throw std::runtime_error("Failed to initialize GLAD");
-	}
+	}	
 
+	glfwSetWindowUserPointer(window, input);
+	
 	this->input->Init(this);
+	
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	glfwSetCursorPosCallback(this->window, cursorPosCallback);
+	glfwSetScrollCallback(window, scrollCallback);
+
+	std::cout << "Initialized window" << std::endl;
+
+
 }
 
 bool Window::getKeyDown(int key) {

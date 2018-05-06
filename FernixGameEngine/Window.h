@@ -1,6 +1,6 @@
 #pragma once
 
-class GLFWwindow;
+struct GLFWwindow;
 class Input;
 
 class Window
@@ -10,7 +10,6 @@ private:
 	const char* title;
 	bool vSync;
 	bool fullscreen;
-	void Init();
 	
 	GLFWwindow* window;
 	Input* input;
@@ -23,7 +22,7 @@ public:
 	void captureMouse(bool);
 	void gameLoop(void (&func)());
 
-	Window(const char* title, Input* input, int width, int height, bool vsync = true, bool fullscreen = true);
+	Window(const char* title, Input* input, int width, int height, bool vsync = true, bool fullscreen = false);
 	void Init();
 	~Window();
 };

@@ -22,7 +22,6 @@ public:
 class Entity
 {
 public:
-	float deltaTime;
 	Transform transform;
 
 	virtual void update(float deltaTime);

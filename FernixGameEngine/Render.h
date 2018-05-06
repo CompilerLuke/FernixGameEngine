@@ -12,14 +12,15 @@ public:
 	unsigned int SCR_WIDTH = 2000;
 	unsigned int SCR_HEIGHT = 1800;
 
-	Camera* camera; //fix that camera is entity, but in theory any entity can 
+	Camera* camera;
 	GLFWwindow* window;
 
-	Render();
+	Render(int,int);
 
 	void RenderFrame();
 	void Clear();
 	void AddEntity(Entity *entity);
+	void Init();
 
 	~Render();
 private:

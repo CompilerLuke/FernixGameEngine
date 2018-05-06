@@ -13,8 +13,13 @@ float lastFrame = 0.0f; // Time of last frame
 class Entity;
 class Camera;
 
-Render::Render()
+Render::Render(int SCR_WIDTH, int SCR_HEIGHT)
 {
+	this->SCR_WIDTH = SCR_WIDTH;
+	this->SCR_HEIGHT = SCR_HEIGHT;
+}
+
+void Render::Init() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 }
@@ -28,9 +33,6 @@ void Render::RenderFrame() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-
-	glm::mat4 projection = camera->GetProjectionMatrix();
-	glm::mat4 view = camera->transform.modelMatrix();
 
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->update(deltaTime);

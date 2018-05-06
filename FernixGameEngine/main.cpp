@@ -24,12 +24,10 @@ int SCR_HEIGHT = 2160;
 const char* title = (char *) "Fernix";
 
 Input input;
-Window window(title, &input, SCR_WIDTH, SCR_HEIGHT);
+Window window(title, &input, SCR_WIDTH, SCR_HEIGHT, true, true);
 Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
 AssetManager assetManager;
+Render renderer(SCR_WIDTH, SCR_HEIGHT);
 
 float vertices[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
@@ -140,44 +138,16 @@ public:
 	}
 };
 
+void gameloop() {
+	renderer.Clear();
+	renderer.RenderFrame();
+}
+
 int main()
 {
-	// glfw: initialize and configure
-	// ------------------------------
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
-
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
-#endif
-
-														 // glfw window creation
-														 // --------------------
-	
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Fernix", glfwGetPrimaryMonitor(), NULL);
-	
-
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-	
-	glEnable(GL_MULTISAMPLE);
+	//initialize window
+	window.Init();
+	input.captureMouse(true);
 
 	Cube cube;
 	Cube plane;
@@ -186,42 +156,16 @@ int main()
 	plane.transform.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	plane.transform.position.y -= 5.5f;
 
-	Render renderer;
+	renderer.Init();
+
 	renderer.camera = &camera;
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
 	renderer.AddEntity(&plane);
 
 
-	//initialize input
-	input.Init(renderer, window);
-	input.captureMouse();
+	window.gameLoop(gameloop);
 
-	//directional light information
-	
-	// render loop
-	// -----------
-	while (!glfwWindowShouldClose(window))
-	{
-		// render
-		// ------
-		glfwPollEvents();
-
-		renderer.Clear();
-
-		// render container
-		renderer.RenderFrame();
-		
-		// apply camera
-
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		// -------------------------------------------------------------------------------
-		glfwSwapBuffers(window);
-	}
-
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
-	glfwTerminate();
 	return 0;
 }
 

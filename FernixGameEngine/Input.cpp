@@ -47,9 +47,6 @@ bool Input::keyDown(int key) {
 	return window->getKeyDown(key);
 }
 
-Input::Input() {
-}
-
 void Input::Init(Window* window) {
 	this->window = window;
 	mouse_position = glm::vec2(window->SCR_WIDTH / 2.0f, window->SCR_HEIGHT / 2.0f);
