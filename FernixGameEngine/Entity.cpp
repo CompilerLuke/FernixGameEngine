@@ -39,7 +39,7 @@ void Entity::SetShaderProps(Shader& shader, Camera& camera) {
 	glm::mat3 normalModel = glm::transpose(glm::inverse(model));
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-	glm::vec3 lightDirection(0.7f, 0.5f, 0.3f);
+	glm::vec3 lightDirection(0.7f, 0.6f, 0.3f);
 
 	shader.setMat4("model", model);
 	shader.setMat3("normalModel", normalModel);

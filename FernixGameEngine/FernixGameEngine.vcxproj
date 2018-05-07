@@ -140,7 +140,9 @@
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Property.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Window.h" />

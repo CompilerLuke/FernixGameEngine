@@ -21,6 +21,7 @@ Render::Render(int SCR_WIDTH, int SCR_HEIGHT)
 
 void Render::Init() {
 	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_BACK);
 	glEnable(GL_MULTISAMPLE);
 }
 
