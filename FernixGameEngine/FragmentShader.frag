@@ -48,8 +48,10 @@ uniform vec3 viewPos;
 uniform Material material;
 
 uniform DirLight dirLight;  
-#define NR_POINT_LIGHTS 4  
-uniform PointLight pointLights[NR_POINT_LIGHTS];
+#define MAX_NR_POINT_LIGHTS 4  
+
+uniform unsigned int NR_POINT_LIGHTS;
+uniform PointLight pointLights[MAX_NR_POINT_LIGHTS];
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
 	vec3 lightDir = normalize(-light.direction);
@@ -86,8 +88,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     specular *= attenuation;
     return (ambient + diffuse + specular);
 } 
-
-
 
 void main()
 {

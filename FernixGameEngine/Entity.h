@@ -23,13 +23,14 @@ class Entity
 {
 public:
 	Transform transform;
+	Render* render;
 
-	virtual void update(float deltaTime);
-	virtual void render(Camera& camera);
+	virtual void update();
+	virtual void render();
 
 	Entity(Transform transform);
 	Entity();
-	void SetShaderProps(Shader& shader, Camera& camera);
+	void SetShaderProps(Shader* shader);
 	virtual ~Entity();
 };
 

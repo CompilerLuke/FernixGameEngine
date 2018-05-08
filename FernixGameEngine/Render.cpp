@@ -30,6 +30,19 @@ void Render::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void Render::AddPointLight(PointLight* light) {
+	pointLights.push_back(light);
+}
+
+void Render::SetDirLight(DirLight* dirLight) {
+	this->dirLight = dirLight;
+}
+
+void Render::SetLightInfo(Shader* shader) {
+	dirLight->setUniforms(shader);
+
+}
+
 void Render::RenderFrame() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;

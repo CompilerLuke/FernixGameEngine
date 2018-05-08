@@ -46,16 +46,17 @@ public:
 	PointLight(float constant = 1.0f, float linear = 0.09f, float quadratic = 0.032f)
 		: constant(constant), linear(linear), quadratic(quadratic) {}
 
-	virtual void setUniforms(Shader shader) {
-		shader.setVec3("light.ambient", ambient);
-		shader.setVec3("light.position", transform.position);
-		shader.setVec3("light.direction", glm::eulerAngles(transform.rotation));
+	virtual void setUniforms(unsigned int id, Shader shader) {
+		std::string prefix = "pointLights[" + id;
+		shader.setVec3(prefix + "].ambient", ambient);
+		shader.setVec3(prefix + "].position", transform.position);
+		shader.setVec3(prefix + "].direction", glm::eulerAngles(transform.rotation));
 	
-		shader.setVec3("light.specular", specular);
-		shader.setVec3("light.diffuse", diffuse);
+		shader.setVec3(prefix + "].specular", specular);
+		shader.setVec3(prefix + "].diffuse", diffuse);
 
-		shader.setFloat("light.constant", 1.0f);
-		shader.setFloat("light.linear", 0.09f);
-		shader.setFloat("light.quadratic", 0.032f);
+		shader.setFloat(prefix + "].constant", 1.0f);
+		shader.setFloat(prefix + "].linear", 0.09f);
+		shader.setFloat(prefix + "].  quadratic", 0.032f);
 	};
 };
