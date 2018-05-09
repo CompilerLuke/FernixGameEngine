@@ -32,7 +32,8 @@ Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, float posX, float posY, float 
 	updateCameraVectors();
 }
 
-void Camera::update(float deltaTime) {
+void Camera::Update() {
+	float deltaTime = ctx->deltaTime;
 	float velocity = MovementSpeed * deltaTime;
 	if (input.keyDown(GLFW_KEY_W)) {
 		this->transform.position += Front * velocity;

@@ -18,8 +18,7 @@ public:
 
 	Camera* camera;
 	GLFWwindow* window;
-
-
+	float deltaTime = 0.0f;
 
 	Render(int,int);
 
@@ -28,12 +27,11 @@ public:
 	void AddEntity(Entity *entity);
 	void AddPointLight(PointLight *light);
 	void SetDirLight(DirLight* light);
-	void SetLightInfo(Shader* s);
+	void SetLightInfo(Shader& s);
 	void Init();
 
 	~Render();
 private:
-	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 
 	std::vector<Entity*> entities;

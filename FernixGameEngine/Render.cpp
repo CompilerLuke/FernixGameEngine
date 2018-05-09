@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Input.h"
+#include "Shader.h"
 #include <iostream>
 
 //timing
@@ -38,9 +39,14 @@ void Render::SetDirLight(DirLight* dirLight) {
 	this->dirLight = dirLight;
 }
 
-void Render::SetLightInfo(Shader* shader) {
-	dirLight->setUniforms(shader);
+void Render::SetLightInfo(Shader& shader) {
+	dirLight->setUniforms(0, shader);
 
+	for (unsigned int i = 0; i < pointLights.size(); i++) {
+		PointLight* pLight = pointLights[i];
+		pLight->setUniforms(i, shader);
+	}
+	shader.setUInt("NR_POINT_LIGHTS", pointLights.size());
 }
 
 void Render::RenderFrame() {
@@ -49,15 +55,16 @@ void Render::RenderFrame() {
 	lastFrame = currentFrame;
 
 	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->update(deltaTime);
+		entities[i]->Update();
 	}
 
 	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->render(*camera);
+		entities[i]->Render();
 	}
 }
 
 void Render::AddEntity(Entity* entity) { //assume entity is heap allocated, and will be deleted
+	entity->ctx = this;
 	entities.push_back(entity);
 }
 

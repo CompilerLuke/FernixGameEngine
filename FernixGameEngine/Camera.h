@@ -45,7 +45,7 @@ public:
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewMatrix();
 
-	void update(float deltaTime) override;
+	void Update() override;
 	
 private:
 	glm::mat4 projection;

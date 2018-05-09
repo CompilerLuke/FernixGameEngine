@@ -8,7 +8,7 @@ in vec4 lighting;
 
 struct Material {
 	sampler2D diffuse;
-	sampler2D specular;
+	vec3 specular;
 	float shininess;
 };
 
@@ -61,9 +61,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     // combine results
-    vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+    vec3 ambient  = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
-    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    vec3 specular = light.specular * spec * material.specular;
     return (ambient + diffuse + specular);
 }
 
@@ -82,7 +82,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     // combine results
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
-    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    vec3 specular = light.specular * spec * material.specular;
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;

@@ -16,21 +16,21 @@ public:
 	glm::quat rotation = glm::quat(0.0f,0.0f,0.0f,0.0f);
 	glm::vec3 scale = glm::vec3(1.0f);
 
-	glm::mat4 modelMatrix();
+	glm::mat4 ModelMatrix();
 };
 
 class Entity
 {
 public:
 	Transform transform;
-	Render* render;
+	Render* ctx;
 
-	virtual void update();
-	virtual void render();
+	virtual void Update();
+	virtual void Render();
 
 	Entity(Transform transform);
 	Entity();
-	void SetShaderProps(Shader* shader);
+	void SetShaderProps(Shader& shader);
 	virtual ~Entity();
 };
 

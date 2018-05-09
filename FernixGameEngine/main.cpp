@@ -109,14 +109,14 @@ public:
 		std::cout << texture.ID << std::endl;
 	}
 
-	void render(Camera& camera) override {
+	void Render() override {
 		// bind Texture
 		glActiveTexture(texture.ID);
 		glBindTexture(GL_TEXTURE_2D, texture.ID);
 
 		ourShader.use();
 
-		this->SetShaderProps(ourShader, camera);
+		this->SetShaderProps(ourShader);
 	
 		if (numberOfPolygons == 6) {
 			ourShader.setVec2("transformUVs", glm::vec2(5.0f, 5.0f));
@@ -128,8 +128,6 @@ public:
 		// camera/view transformation
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, numberOfPolygons);
-
-		
 	}
 
 	~Cube() {
@@ -158,11 +156,14 @@ int main()
 
 	renderer.Init();
 
+	DirLight dirLight;
+
 	renderer.camera = &camera;
+	renderer.SetDirLight(&dirLight);
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
 	renderer.AddEntity(&plane);
-
+	renderer.AddEntity(&dirLight);
 
 	window.gameLoop(gameloop);
 
