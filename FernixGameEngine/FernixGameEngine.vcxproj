@@ -128,6 +128,8 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -143,6 +145,8 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h" />
