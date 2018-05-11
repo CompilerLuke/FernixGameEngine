@@ -8,7 +8,6 @@
 
 #include "Mesh.h"
 
-
 class Model
 {
 public:
@@ -17,7 +16,7 @@ public:
 	{
 		loadModel(path);
 	}
-	void Render(Shader shader);
+	void Render(Shader& shader);
 private:
 	/*  Model Data  */
 	std::vector<Mesh> meshes;
