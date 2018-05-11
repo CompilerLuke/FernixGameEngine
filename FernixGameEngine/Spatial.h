@@ -6,17 +6,15 @@
 
 class Shader;
 
-class Spatial : Entity
+class Spatial : public Entity
 {
 public:
 	Spatial(Model* model, Shader* shader);
+	~Spatial();
 
 	virtual void Render() override;
 
-private:	
 	Shader* shader;
 	Model* model;
-	Spatial();
-	~Spatial();
 };
 

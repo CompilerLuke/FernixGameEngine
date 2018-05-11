@@ -17,6 +17,7 @@
 #include "Input.h"
 #include "Window.h"
 #include "AssetManager.h"
+#include "Spatial.h"
 
 int SCR_WIDTH = 3840;
 int SCR_HEIGHT = 2160;
@@ -73,14 +74,16 @@ float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 };
 
-class Cube : public Entity {
+Shader ourShader("VertexShader.vert", "FragmentShader.frag");
+Model gun((char*) "gun.fbx");
+
+class Cube : public Spatial {
 public:
 	Resource texture;
 	unsigned int VBO, VAO;
-	Shader ourShader;
 	int numberOfPolygons = 36;
 
-	Cube() : Entity(), ourShader("VertexShader.vert", "FragmentShader.frag") {
+	Cube() : Spatial(&gun, &ourShader) {
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 
@@ -114,16 +117,16 @@ public:
 		glActiveTexture(texture.ID);
 		glBindTexture(GL_TEXTURE_2D, texture.ID);
 
-		ourShader.use();
-
-		this->SetShaderProps(ourShader);
+		this->shader->use();
 	
 		if (numberOfPolygons == 6) {
-			ourShader.setVec2("transformUVs", glm::vec2(5.0f, 5.0f));
+			this->shader->setVec2("transformUVs", glm::vec2(5.0f, 5.0f));
 		}
 		else {
-			ourShader.setVec2("transformUVs", glm::vec2(1.0f, 1.0f));
+			this->shader->setVec2("transformUVs", glm::vec2(1.0f, 1.0f));
 		}
+
+		Spatial::Render();
 
 		// camera/view transformation
 		glBindVertexArray(VAO);

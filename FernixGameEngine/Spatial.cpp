@@ -1,14 +1,17 @@
 #include "Spatial.h"
-#include "Entity.h"
-#include "Model.h"
+#include "Shader.h"
 
-class Entity;
-
-Spatial::Spatial()
-{
+Spatial::Spatial(Model* model, Shader* shader) : Entity() {
+	model = model;
+	shader = shader;
 }
 
-
-Spatial::~Spatial()
-{
+void Spatial::Render() {
+	this->SetShaderProps(*shader);
+	model->Render(*shader);
 }
+
+Spatial::~Spatial() {
+
+}
+
