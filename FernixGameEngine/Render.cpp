@@ -13,6 +13,7 @@ float lastFrame = 0.0f; // Time of last frame
 
 class Entity;
 class Camera;
+class Shader;
 
 Render::Render(int SCR_WIDTH, int SCR_HEIGHT)
 {
@@ -39,7 +40,7 @@ void Render::SetDirLight(DirLight* dirLight) {
 	this->dirLight = dirLight;
 }
 
-void Render::SetLightInfo(Shader& shader) {
+void Render::SetLightInfo(Shader shader) {
 	dirLight->setUniforms(0, shader);
 
 	for (unsigned int i = 0; i < pointLights.size(); i++) {

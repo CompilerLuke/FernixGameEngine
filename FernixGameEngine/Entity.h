@@ -30,7 +30,7 @@ public:
 
 	Entity(Transform transform);
 	Entity();
-	void SetShaderProps(Shader& shader);
+	void SetShaderProps(Shader shader);
 	virtual ~Entity();
 };
 

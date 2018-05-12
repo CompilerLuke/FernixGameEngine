@@ -33,9 +33,8 @@ public:
 	/*  Functions   */
 	// constructor, expects a filepath to a 3D model.
 	Model(std::string const &path, bool gamma = false);
-
 	// draws the model, and thus all its meshes
-	void Render(Shader& shader);
+	void Render(Shader shader);
 
 private:
 	/*  Functions   */

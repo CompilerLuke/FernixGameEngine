@@ -36,7 +36,7 @@ public:
 
 	/*  Functions  */
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-	void Render(Shader& shader);
+	void Render(Shader shader);
 private:
 	/*  Render data  */
 	unsigned int VAO, VBO, EBO;

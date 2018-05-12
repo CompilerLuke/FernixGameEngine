@@ -31,7 +31,7 @@ Entity::Entity() {
 	transform = Transform();
 }
 
-void Entity::SetShaderProps(Shader& shader) {
+void Entity::SetShaderProps(Shader shader) {
 	Camera* camera = ctx->camera;
 	glm::mat4 view = ctx->camera->GetViewMatrix();
 	shader.setMat4("view", view);

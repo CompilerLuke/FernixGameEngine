@@ -49,7 +49,7 @@ void Mesh::setupMesh()
 	glBindVertexArray(0);
 }
 
-void Mesh::Render(Shader& shader)
+void Mesh::Render(Shader shader)
 {
 	// bind appropriate textures
 	unsigned int diffuseNr = 1;

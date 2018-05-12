@@ -15,7 +15,7 @@ uniform mat3 normalModel;
 
 struct Material {
 	sampler2D diffuse;
-	vec3 specular;
+	sampler2D specular;
 	float shininess;
 };
 

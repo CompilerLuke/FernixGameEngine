@@ -14,7 +14,7 @@ Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma)
 }
 
 // draws the model, and thus all its meshes
-void Model::Render(Shader& shader)
+void Model::Render(Shader shader)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].Render(shader);

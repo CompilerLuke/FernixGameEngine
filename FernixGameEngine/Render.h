@@ -27,7 +27,7 @@ public:
 	void AddEntity(Entity *entity);
 	void AddPointLight(PointLight *light);
 	void SetDirLight(DirLight* light);
-	void SetLightInfo(Shader& s);
+	void SetLightInfo(Shader s);
 	void Init();
 
 	~Render();

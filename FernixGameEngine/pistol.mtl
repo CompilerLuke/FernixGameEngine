@@ -1,0 +1,19 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.1.71981620)
+
+newmtl metal
+kd 0.8 0.8 0.8
+illum 1
+
+newmtl dark metal
+kd 0.8 0.8 0.8
+illum 1
+
+newmtl wood
+kd 0.8 0.8 0.8
+illum 1
+
+newmtl black trigger
+kd 0.8 0.8 0.8
+illum 1
+
