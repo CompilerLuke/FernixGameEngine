@@ -123,7 +123,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// normal: texture_normalN
 
 	// 1. albedo maps
-	std::vector<Texture> albedoMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuseo");
+	std::vector<Texture> albedoMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), albedoMaps.begin(), albedoMaps.end());
 	// 2. metallic maps
 	std::vector<Texture> metallicMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_metallic");

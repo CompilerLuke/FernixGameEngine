@@ -20,7 +20,7 @@ struct Material {
 	sampler2D metallic;
 	sampler2D roughness;
 	sampler2D ao;
-	sampler2D normalMap;
+	sampler2D normal;
 };
 
 uniform vec3 viewPos;
@@ -31,12 +31,21 @@ uniform vec2 transformUVs;
 void main()
 {
     gl_Position = projection * view * model * vec4(aPos, 1.0);
-    TexCoords = vec2(aTexCoords.x, aTexCoords.y) * transformUVs;
+    TexCoords = vec2(aTexCoords.x, aTexCoords.y);
 	Normal = normalModel * aNormal;
 	FragPos = vec3(model * vec4(aPos, 1.0));
 
-	vec3 T = normalize(vec3(model * vec4(aTangent,   0.0)));
-	vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
-	vec3 N = normalize(vec3(model * vec4(aNormal,    0.0)));
-	TBN = mat3(T, B, N);
+	vec3 T = normalize(vec3(mat4(normalModel) * vec4(aTangent, 0.0)));
+	vec3 N = normalize(vec3(mat4(normalModel) * vec4(aNormal, 0.0)));
+	// re-orthogonalize T with respect to N
+	T = normalize(T - dot(T, N) * N);
+	// then retrieve perpendicular vector B with the cross product of T and N
+	vec3 B = cross(N, T);
+
+	// TBN must form a right handed coord system.
+    // Some models have symetric UVs. Check and fix.
+    if (dot(cross(N, T), B) < 0.0)
+		T = T * -1.0;
+
+	mat3 TBN = mat3(T, B, N) ;
 }

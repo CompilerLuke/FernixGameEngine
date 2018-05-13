@@ -75,18 +75,22 @@ int main()
 	Cube cube(&gun, &ourShader);
 
 	//cube.transform.rotation = glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	cube.transform.scale = glm::vec3(0.005f);
+	cube.transform.scale = glm::vec3(0.001f);
 	cube.shader = &ourShader;
 	cube.model = &gun;
-	PointLight pointLight;
-	pointLight.transform.position.y = 5.0f;
-	pointLight.transform.position.x = 5.0f;
+	
+	//PointLight pointLight;
+	//pointLight.transform.position.y = 3.0f;
+	//pointLight.transform.position.x = 3.0f;
+
+	DirLight dirLight;
+	dirLight.transform.rotation = glm::angleAxis(45.0f, glm::vec3(1.0f, 1.0f, 0.0f));
 
 	renderer.camera = &camera;
-	renderer.AddPointLight(&pointLight);
+	renderer.SetDirLight(&dirLight);
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
-	renderer.AddEntity(&pointLight);
+	renderer.AddEntity(&dirLight);
 
 	window.gameLoop(gameloop);
 

@@ -8,7 +8,7 @@
 
 void DirLight::setUniforms(unsigned int id, Shader shader) {
 	shader.setVec3("dirLightr.ambient", color);
-	shader.setVec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f)); //glm::eulerAngles(transform.rotation));
+	shader.setVec3("dirLight.direction", glm::eulerAngles(transform.rotation));
 }
 
 void PointLight::setUniforms(unsigned int id, Shader shader) {

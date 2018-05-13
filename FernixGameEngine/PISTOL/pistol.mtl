@@ -4,34 +4,34 @@
 # DIFFUSE = ALBEDO, SPECULAR = METALLIC, AMBIENT = ROUGHNESS, EMISSIVE = AO
 
 newmtl metal
+map_ka pistol_metal_Roughness.png
 map_kd pistol_metal_Albedo.png
 map_ks pistol_metal_Metallic.png
-map_ka pistol_metal_Roughness.png
 map_ke pistol_metal_Ao.png
-map_kh pistol_metal_Normal.png
+bump pistol_metal_Normal.png
 illum 1
 
-newmtl dark_metal
+newmtl dark metal
+map_ka pistol_dark_metal_Roughness.png
 map_kd pistol_dark_metal_Albedo.png
 map_ks pistol_dark_metal_Metallic.png
-map_ka pistol_dark_metal_Roughness.png
 map_ke pistol_dark_metal_Ao.png
-map_kh pistol_dark_metal_Normal.png
+bump pistol_dark_metal_Normal.png
 illum 1
 
 newmtl wood
+map_ka pistol_wood_Roughness.png
 map_kd pistol_wood_Albedo.png
 map_ks pistol_wood_Metallic.png
-map_ka pistol_wood_Roughness.png
 map_ke pistol_wood_Ao.png
-map_kh pistol_wood_Normal.png
+bump pistol_wood_Normal.png
 illum 1
 
-newmtl black_trigger
+newmtl black trigger
+map_ka pistol_black_trigger_Roughness.png
 map_kd pistol_black_trigger_Albedo.png
 map_ks pistol_black_trigger_Metallic.png
-map_ka pistol_black_trigger_Roughness.png
 map_ke pistol_black_trigger_Ao.png
-map_kh pistol_black_trigger_Normal.png
+bump pistol_black_trigger_Normal.png
 illum 1
 

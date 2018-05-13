@@ -49,6 +49,8 @@ void Mesh::setupMesh()
 	glBindVertexArray(0);
 }
 
+unsigned int offsetForTextureName = std::string("texture_").size();
+
 void Mesh::Render(Shader shader)
 {
 	// bind appropriate textures
@@ -64,7 +66,7 @@ void Mesh::Render(Shader shader)
 										  // retrieve texture number (the N in albedo_textureN)
 		std::string number;
 		std::string name = textures[i].type;
-		if (name == "texture_albedo")
+		if (name == "texture_diffuse")
 			number = std::to_string(albedoNr++);
 		else if (name == "texture_metallic")
 			number = std::to_string(metallicNr++); // transfer unsigned int to stream
@@ -75,9 +77,14 @@ void Mesh::Render(Shader shader)
 		else if (name == "texture_normal") {
 			number = std::to_string(normalNr++);
 		}
+		else {
+			std::cout << "unknown texture type" << std::endl;
+		}
 
 		// now set the sampler to the correct texture unit
-		glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+
+		name = "material." + name.substr(offsetForTextureName, name.size());
+		glUniform1i(glGetUniformLocation(shader.ID, (name).c_str()), i);
 		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
