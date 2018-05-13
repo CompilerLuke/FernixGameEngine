@@ -49,7 +49,7 @@ void Render::SetLightInfo(Shader shader) {
 		PointLight* pLight = pointLights[i];
 		pLight->setUniforms(i, shader);
 	}
-	shader.setUInt("NR_POINT_LIGHTS", pointLights.size());
+	shader.setInt("NR_POINT_LIGHTS", pointLights.size());
 }
 
 void Render::RenderFrame() {

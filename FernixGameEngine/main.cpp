@@ -69,17 +69,18 @@ int main()
 
 	renderer.Init();
 
-	Model gun(assetManager.absolute("PISTOL/pistol.fbx"));
+	Model gun(assetManager.absolute("PISTOL/pistol.obj"));
 
 	Shader ourShader("pbr.vert", "pbr.frag");
 	Cube cube(&gun, &ourShader);
 
-	cube.transform.rotation = glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	//cube.transform.scale = glm::vec3(0.02f, 0.02f, 0.02f);
+	//cube.transform.rotation = glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	cube.transform.scale = glm::vec3(0.005f);
 	cube.shader = &ourShader;
 	cube.model = &gun;
 	PointLight pointLight;
-	pointLight.transform.position.y = 3.0f;
+	pointLight.transform.position.y = 5.0f;
+	pointLight.transform.position.x = 5.0f;
 
 	renderer.camera = &camera;
 	renderer.AddPointLight(&pointLight);

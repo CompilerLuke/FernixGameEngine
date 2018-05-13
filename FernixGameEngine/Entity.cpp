@@ -44,8 +44,8 @@ void Entity::SetShaderProps(Shader shader) {
 	shader.setVec3("viewPos", camera->transform.position);
 	shader.setMat4("projection", camera->GetProjectionMatrix());
 
-	shader.setVec3("material.specular", glm::vec3(0.2f, 0.2f, 0.2f));
-	shader.setFloat("material.shininess", 32.0f);
+	//shader.setVec3("material.specular", glm::vec3(0.2f, 0.2f, 0.2f));
+	//shader.setFloat("material.shininess", 32.0f);
 
 	ctx->SetLightInfo(shader);
 }

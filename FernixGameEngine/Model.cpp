@@ -123,7 +123,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// normal: texture_normalN
 
 	// 1. albedo maps
-	std::vector<Texture> albedoMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+	std::vector<Texture> albedoMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuseo");
 	textures.insert(textures.end(), albedoMaps.begin(), albedoMaps.end());
 	// 2. metallic maps
 	std::vector<Texture> metallicMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_metallic");
@@ -137,6 +137,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// 5. ambient occlusion maps
 	std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_ao");
 	textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
+
+	std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
 	// return a mesh object created from the extracted mesh data
 	return Mesh(vertices, indices, textures);

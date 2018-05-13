@@ -50,7 +50,7 @@ uniform Material material;
 uniform DirLight dirLight;  
 #define MAX_NR_POINT_LIGHTS 4  
 
-uniform unsigned int NR_POINT_LIGHTS;
+uniform int NR_POINT_LIGHTS;
 uniform PointLight pointLights[MAX_NR_POINT_LIGHTS];
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
