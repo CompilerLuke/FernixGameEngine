@@ -34,8 +34,9 @@ void Model::loadModel(std::string const &path)
 		return;
 	}
 	// retrieve the directory path of the filepath
-	directory = path.substr(0, path.find_last_of('/'));
-
+	directory = path.substr(0, path.find_last_of("/\\"));
+	std::cout << "Directory is " << std::endl;
+	std::cout << directory << std::endl;
 	// process ASSIMP's root node recursively
 	processNode(scene->mRootNode, scene);
 }
@@ -121,18 +122,21 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	// specular: texture_specularN
 	// normal: texture_normalN
 
-	// 1. diffuse maps
-	std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	// 2. specular maps
-	std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+	// 1. albedo maps
+	std::vector<Texture> albedoMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+	textures.insert(textures.end(), albedoMaps.begin(), albedoMaps.end());
+	// 2. metallic maps
+	std::vector<Texture> metallicMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_metallic");
+	textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
 	// 3. normal maps
-	std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-	// 4. height maps
-	std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+	//std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+	//textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+	// 4. roughness maps
+	std::vector<Texture> roughnessMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_roughness");
+	textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
+	// 5. ambient occlusion maps
+	std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_ao");
+	textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
 
 	// return a mesh object created from the extracted mesh data
 	return Mesh(vertices, indices, textures);
@@ -179,6 +183,8 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 {
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
+
+	std::cout << path << std::endl;
 
 	unsigned int textureID;
 	glGenTextures(1, &textureID);

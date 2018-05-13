@@ -1,0 +1,33 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.1.71981620)
+
+# DIFFUSE = ALBEDO, SPECULAR = METALLIC, AMBIENT = ROUGHNESS, EMISSIVE = AO
+
+newmtl metal
+map_kd pistol_metal_Diffuse.png
+map_ks pistol_metal_Metallic.png
+map_ka pistol_metal_Roughness.png
+map_ke pistol_metal_Ao.png
+illum 1
+
+newmtl dark_metal
+map_kd pistol_dark_metal_Diffuse.png
+map_ks pistol_dark_metal_Metallic.png
+map_ka pistol_dark_metal_Roughness.png
+map_ke pistol_dark_metal_Ao.png
+illum 1
+
+newmtl wood
+map_kd pistol_wood_Diffuse.png
+map_ks pistol_wood_Metallic.png
+map_ka pistol_wood_Roughness.png
+map_ke pistol_wood_Ao.png
+illum 1
+
+newmtl black_trigger
+map_kd pistol_black_trigger_Diffuse.png
+map_ks pistol_black_trigger_Metallic.png
+map_ka pistol_black_trigger_Roughness.png
+map_ke pistol_black_trigger_Ao.png
+illum 1
+

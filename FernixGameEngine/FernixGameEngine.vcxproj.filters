@@ -108,4 +108,12 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pbr.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pbr.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

@@ -12,33 +12,24 @@ class Shader;
 
 class Light: public Entity {
 protected:
-	glm::vec3 ambient = glm::vec3(0.5f);
-	glm::vec3 diffuse = glm::vec3(0.5f);
-	glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 color = glm::vec3(1.0f);
 
 public:
-	Light() {};
+	Light(glm::vec3 color);
 	virtual void setUniforms(unsigned int id, Shader shader) {};
 	virtual ~Light() {};
 };
 
 class DirLight : public Light {
-protected:
-
 public:
-	DirLight() {}
+	DirLight(glm::vec3 color = glm::vec3(1.0f));
 
 	virtual void setUniforms(unsigned int id, Shader shader) override;
 };
 
 class PointLight : public Light {
-protected:
-	float constant;
-	float linear;
-	float quadratic;
-
 public:
-	PointLight(float constant = 1.0f, float linear = 0.09f, float quadratic = 0.032f);
+	PointLight(glm::vec3 color = glm::vec3(1.0f));
 
 	virtual void setUniforms(unsigned int id, Shader shader) override;
 };

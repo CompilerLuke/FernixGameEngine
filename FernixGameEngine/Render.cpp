@@ -41,7 +41,9 @@ void Render::SetDirLight(DirLight* dirLight) {
 }
 
 void Render::SetLightInfo(Shader shader) {
-	dirLight->setUniforms(0, shader);
+	if (dirLight) {
+		dirLight->setUniforms(0, shader);
+	}
 
 	for (unsigned int i = 0; i < pointLights.size(); i++) {
 		PointLight* pLight = pointLights[i];

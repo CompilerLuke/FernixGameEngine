@@ -157,6 +157,10 @@
   <ItemGroup>
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pbr.frag" />
+    <None Include="pbr.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
