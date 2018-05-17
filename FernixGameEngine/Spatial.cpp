@@ -11,7 +11,7 @@ Spatial::Spatial(Model* model, Shader* shader) : Entity() {
 void Spatial::Render() {
 	shader->use();
 	this->SetShaderProps(*shader);
-	model->Render(*shader);
+	model->Render(*shader, ctx->skybox);
 }
 
 Spatial::~Spatial() {

@@ -6,6 +6,8 @@ in vec3 Normal;
 in vec3 FragPos;
 in mat3 TBN;
 
+uniform samplerCube irradianceMap;
+
 struct Material {
 	sampler2D diffuse;
 	sampler2D metallic;
@@ -45,6 +47,11 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}   
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -170,40 +177,20 @@ void main()
     // phase 2: Point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++) {
         Lo += CalcPointLight(pointLights[i], norm, FragPos, viewDir);  
-		 // calculate per-light radiance
-		 /*
-        -vec3 L = normalize(pointLights[i].position - WorldPos);
-        -vec3 H = normalize(V + L);
-        -float distance    = length(pointLights[i].position - WorldPos);
-        -float attenuation = 1.0 / (distance * distance);
-        -vec3 radiance     = pointLights[i].color * attenuation;        
-        
-        // cook-torrance brdf
-        -float NDF = DistributionGGX(N, H, roughness);        
-        -float G   = GeometrySmith(N, V, L, roughness);      
-        -vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);       
-        
-        -vec3 kS = F;
-        -vec3 kD = vec3(1.0) - kS;
-        -kD *= 1.0 - metallic;	  
-        
-        -vec3 numerator    = NDF * G * F;
-        -float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        -vec3 specular     = numerator / max(denominator, 0.001);  
-            
-        // add to outgoing radiance Lo
-        -float NdotL = max(dot(N, L), 0.0);                
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
-		*/
 	}
 
     //Lo += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
 
-	vec3 ambient = vec3(0.03) * albedo * ao;
+	vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
+	vec3 kD = 1.0 - kS;
+	vec3 irradiance = texture(irradianceMap, N).rgb;
+	vec3 diffuse    = irradiance * albedo;
+	vec3 ambient    = (kD * diffuse) * ao; 
+
     vec3 color = ambient + Lo;
 	
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  
    
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(ambient, 1.0);
 }

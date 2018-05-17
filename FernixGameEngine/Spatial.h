@@ -3,8 +3,10 @@
 #include "Spatial.h"
 #include "Entity.h"
 #include "Model.h"
+#include "Render.h"
 
 class Shader;
+class Render;
 
 class Spatial : public Entity
 {

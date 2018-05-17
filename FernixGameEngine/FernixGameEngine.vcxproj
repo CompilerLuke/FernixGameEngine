@@ -132,12 +132,14 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Spatial.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentShader.frag" />
+    <Text Include="eToCubemap.vert" />
     <Text Include="VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
@@ -150,7 +152,9 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Spatial.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -158,8 +162,13 @@
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="eToCubemap.frag" />
+    <None Include="irradiance.frag" />
+    <None Include="irradiance.vert" />
     <None Include="pbr.frag" />
     <None Include="pbr.vert" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

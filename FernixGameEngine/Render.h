@@ -9,6 +9,7 @@ class Camera;
 class Light;
 class PointLight;
 class DirLight;
+class Skybox;
 
 class Render
 {
@@ -17,6 +18,7 @@ public:
 	unsigned int SCR_HEIGHT = 1800;
 
 	Camera* camera;
+	Skybox* skybox;
 	GLFWwindow* window;
 	float deltaTime = 0.0f;
 

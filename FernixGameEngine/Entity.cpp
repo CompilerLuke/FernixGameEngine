@@ -7,7 +7,11 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Render.h"
+#include "Skybox.h"
 #include <iostream>
+
+class Render;
+class Camera;
 
 glm::mat4 Transform::ModelMatrix() {
 	glm::mat4 matrix = glm::mat4(1.0f);
@@ -33,6 +37,8 @@ Entity::Entity() {
 
 void Entity::SetShaderProps(Shader shader) {
 	Camera* camera = ctx->camera;
+	Skybox* skybox = ctx->skybox;
+
 	glm::mat4 view = ctx->camera->GetViewMatrix();
 	shader.setMat4("view", view);
 
@@ -43,9 +49,6 @@ void Entity::SetShaderProps(Shader shader) {
 	shader.setMat3("normalModel", normalModel);
 	shader.setVec3("viewPos", camera->transform.position);
 	shader.setMat4("projection", camera->GetProjectionMatrix());
-
-	//shader.setVec3("material.specular", glm::vec3(0.2f, 0.2f, 0.2f));
-	//shader.setFloat("material.shininess", 32.0f);
 
 	ctx->SetLightInfo(shader);
 }

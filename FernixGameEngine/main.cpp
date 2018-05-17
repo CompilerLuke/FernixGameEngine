@@ -19,6 +19,7 @@
 #include "AssetManager.h"
 #include "Spatial.h"
 #include "Model.h"
+#include "Skybox.h"
 
 int SCR_WIDTH = 3840;
 int SCR_HEIGHT = 2160;
@@ -32,29 +33,6 @@ Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
 AssetManager assetManager;
 Render renderer(SCR_WIDTH, SCR_HEIGHT);
 
-class Cube : public Spatial {
-public:
-	Resource texture;
-
-	Cube(Model* model, Shader* shader) : Spatial(model, shader) {
-		std::cout << shader << std::endl;
-		assetManager.loadTexture("stylzed castle texture.jpg");
-		Option option = assetManager.loadTexture("stylzed castle texture.jpg");
-
-		if (option.error != "") {
-			std::cout << option.error << std::endl;
-		}
-		texture = option.resource;
-		std::cout << texture.ID << std::endl;
-	}
-
-	void Render() override {
-		Spatial::Render();
-	}
-
-	~Cube() {
-	}
-};
 
 void gameloop() {
 	renderer.Clear();
@@ -67,30 +45,41 @@ int main()
 	window.Init();
 	input.captureMouse(true);
 
-	renderer.Init();
-
 	Model gun(assetManager.absolute("PISTOL/pistol.obj"));
 
 	Shader ourShader("pbr.vert", "pbr.frag");
-	Cube cube(&gun, &ourShader);
+	Spatial cube(&gun, &ourShader);
+
+	Skybox skybox;
+	skybox.Init();
+
+	// then before rendering, configure the viewport to the original framebuffer's screen dimensions
+	//int scrWidth, scrHeight;
+	//glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
+	//glViewport(0, 0, scrWidth, scrHeight);
+
+	renderer.Init();
 
 	//cube.transform.rotation = glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	cube.transform.scale = glm::vec3(0.001f);
 	cube.shader = &ourShader;
 	cube.model = &gun;
-	
-	//PointLight pointLight;
-	//pointLight.transform.position.y = 3.0f;
-	//pointLight.transform.position.x = 3.0f;
+
+	PointLight pointLight;
+	pointLight.transform.position.y = 3.0f;
+	pointLight.transform.position.x = 3.0f;
 
 	DirLight dirLight;
 	dirLight.transform.rotation = glm::angleAxis(45.0f, glm::vec3(1.0f, 1.0f, 0.0f));
 
 	renderer.camera = &camera;
-	renderer.SetDirLight(&dirLight);
+	renderer.skybox = &skybox;
+	//renderer.SetDirLight(&dirLight);
+	renderer.AddPointLight(&pointLight);
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
-	renderer.AddEntity(&dirLight);
+	renderer.AddEntity(&pointLight);
+	renderer.AddEntity(&skybox);
 
 	window.gameLoop(gameloop);
 

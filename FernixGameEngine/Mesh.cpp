@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "AssetManager.h"
 #include "Shader.h"
+#include "Skybox.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
@@ -51,8 +52,9 @@ void Mesh::setupMesh()
 
 unsigned int offsetForTextureName = std::string("texture_").size();
 
-void Mesh::Render(Shader shader)
+void Mesh::Render(Shader shader, Skybox* skybox)
 {
+	skybox->SetIrradiance(shader);
 	// bind appropriate textures
 	unsigned int albedoNr = 1;
 	unsigned int metallicNr = 1;
@@ -62,7 +64,8 @@ void Mesh::Render(Shader shader)
 
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+		//set skybox first
+		glActiveTexture(GL_TEXTURE0 + i + 1); // active proper texture unit before binding
 										  // retrieve texture number (the N in albedo_textureN)
 		std::string number;
 		std::string name = textures[i].type;
@@ -84,7 +87,7 @@ void Mesh::Render(Shader shader)
 		// now set the sampler to the correct texture unit
 
 		name = "material." + name.substr(offsetForTextureName, name.size());
-		glUniform1i(glGetUniformLocation(shader.ID, (name).c_str()), i);
+		glUniform1i(glGetUniformLocation(shader.ID, (name).c_str()), i + 1);
 		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}

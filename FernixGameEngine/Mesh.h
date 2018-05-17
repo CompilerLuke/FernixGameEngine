@@ -7,6 +7,7 @@
 #include "Entity.h"
 
 class Shader;
+class Skybox;
 
 struct Vertex {
 	// position
@@ -36,7 +37,7 @@ public:
 
 	/*  Functions  */
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-	void Render(Shader shader);
+	void Render(Shader shader, Skybox* skybox);
 private:
 	/*  Render data  */
 	unsigned int VAO, VBO, EBO;

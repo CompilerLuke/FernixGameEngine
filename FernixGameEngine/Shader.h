@@ -30,7 +30,7 @@ public:
 	void setVec2(const std::string &name, const glm::vec2 &vec) const;
 	void setVec3(const std::string &name, const glm::vec3 &vec) const;
 private:
-	void checkCompileErrors(unsigned int shader, std::string type);
+	void checkCompileErrors(unsigned int shader, std::string type, const std::string &filename);
 };
 
 #endif

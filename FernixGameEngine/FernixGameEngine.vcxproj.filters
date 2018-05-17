@@ -56,12 +56,18 @@
     <ClCompile Include="Spatial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="VertexShader.vert">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="FragmentShader.frag">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="eToCubemap.vert">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
@@ -102,6 +108,10 @@
     <ClInclude Include="Spatial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg">
@@ -113,6 +123,21 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="pbr.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="eToCubemap.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="skybox.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="skybox.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="irradiance.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="irradiance.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

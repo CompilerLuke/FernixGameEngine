@@ -25,6 +25,8 @@ void Render::Init() {
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_BACK);
 	glEnable(GL_MULTISAMPLE);
+	glDepthFunc(GL_LESS);
+	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 }
 
 void Render::Clear() {

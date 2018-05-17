@@ -19,6 +19,8 @@
 #include <map>
 #include <vector>
 
+class Skybox;
+
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma);
 
 class Model
@@ -34,7 +36,7 @@ public:
 	// constructor, expects a filepath to a 3D model.
 	Model(std::string const &path, bool gamma = false);
 	// draws the model, and thus all its meshes
-	void Render(Shader shader);
+	void Render(Shader shader, Skybox* skybox);
 
 private:
 	/*  Functions   */
