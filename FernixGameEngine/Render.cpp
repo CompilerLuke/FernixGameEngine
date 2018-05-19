@@ -11,7 +11,7 @@ float lastFrame = 0.0f; // Time of last frame
 
 //render doesnt initialize window
 
-class Entity;
+struct Entity;
 class Camera;
 class Shader;
 

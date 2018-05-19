@@ -7,7 +7,7 @@
 
 #include "Shader.h"
 
-class Entity;
+struct Entity;
 class Shader;
 
 class Light: public Entity {

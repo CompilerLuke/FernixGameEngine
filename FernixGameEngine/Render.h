@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "Light.h"
 
-class Entity;
+struct Entity;
 class Camera;
 class Light;
 class PointLight;
