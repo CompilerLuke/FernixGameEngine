@@ -17,9 +17,9 @@
 #include "Input.h"
 #include "Window.h"
 #include "AssetManager.h"
-#include "Spatial.h"
 #include "Model.h"
 #include "Skybox.h"
+#include "Entity.h"
 
 int SCR_WIDTH = 3840;
 int SCR_HEIGHT = 2160;
@@ -32,7 +32,6 @@ Window window(title, &input, SCR_WIDTH, SCR_HEIGHT, true, false);
 Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
 AssetManager assetManager;
 Render renderer(SCR_WIDTH, SCR_HEIGHT);
-
 
 void gameloop() {
 	renderer.Clear();
@@ -48,7 +47,7 @@ int main()
 	Model gun(assetManager.absolute("PISTOL/pistol.obj"));
 
 	Shader ourShader("pbr.vert", "pbr.frag");
-	Spatial cube(&gun, &ourShader);
+	Entity cube;
 
 	Skybox skybox;
 	skybox.Init();

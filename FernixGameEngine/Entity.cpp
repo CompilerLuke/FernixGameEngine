@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Render.h"
+#include "Model.h"
 #include "Skybox.h"
 #include <iostream>
 
@@ -26,13 +27,17 @@ glm::mat4 Transform::ModelMatrix() {
 	return matrix; //check if this doesnt cause some kind of scope error
 }
 
-Entity::Entity(Transform transform)
+Entity::Entity(Transform transform, Model* model, Shader* shader)
 {
 	transform = transform;
+	model = model;
+	shader = shader;
 }
 
 Entity::Entity() {
 	transform = Transform();
+	model = NULL;
+	shader = NULL;
 }
 
 void Entity::SetShaderProps(Shader shader) {
@@ -54,7 +59,13 @@ void Entity::SetShaderProps(Shader shader) {
 }
 
 void Entity::Update() {};
-void Entity::Render() {};
+void Entity::Render() {
+	if (shader && model) {
+		shader->use();
+		this->SetShaderProps(*shader);
+		model->Render(*shader, ctx->skybox);
+	}
+};
 
 Entity::~Entity()
 {

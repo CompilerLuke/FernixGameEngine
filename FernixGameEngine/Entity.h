@@ -9,9 +9,9 @@
 class Shader;
 class Render;
 class Camera;
+class Model;
 
-class Transform {
-public:
+struct Transform {
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::quat rotation = glm::quat(0.0f,0.0f,0.0f,0.0f);
 	glm::vec3 scale = glm::vec3(1.0f);
@@ -19,16 +19,16 @@ public:
 	glm::mat4 ModelMatrix();
 };
 
-class Entity
-{
-public:
+struct Entity {
 	Transform transform;
+	Model* model;
+	Shader* shader;
 	Render* ctx;
 
 	virtual void Update();
 	virtual void Render();
 
-	Entity(Transform transform);
+	Entity(Transform transform, Model* model, Shader* shader);
 	Entity();
 	void SetShaderProps(Shader shader);
 	virtual ~Entity();
