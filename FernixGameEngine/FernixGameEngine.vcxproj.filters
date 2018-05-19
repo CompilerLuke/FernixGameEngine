@@ -140,5 +140,17 @@
     <None Include="irradiance.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="prefilter.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="prefilter.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="brdf_convultion.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="brdf_convultion.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

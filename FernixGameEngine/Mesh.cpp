@@ -61,11 +61,10 @@ void Mesh::Render(Shader shader, Skybox* skybox)
 	unsigned int roughnessNr = 1;
 	unsigned int aoNr = 1;
 	unsigned int normalNr = 1;
-
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		//set skybox first
-		glActiveTexture(GL_TEXTURE0 + i + 1); // active proper texture unit before binding
+		glActiveTexture(GL_TEXTURE0 + i + 3); // active proper texture unit before binding
 										  // retrieve texture number (the N in albedo_textureN)
 		std::string number;
 		std::string name = textures[i].type;
@@ -87,7 +86,7 @@ void Mesh::Render(Shader shader, Skybox* skybox)
 		// now set the sampler to the correct texture unit
 
 		name = "material." + name.substr(offsetForTextureName, name.size());
-		glUniform1i(glGetUniformLocation(shader.ID, (name).c_str()), i + 1);
+		shader.setInt(name, i + 3); //skybox sets other textures first
 		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}

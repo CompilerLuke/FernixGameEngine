@@ -162,11 +162,15 @@
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="brdf_convultion.frag" />
+    <None Include="brdf_convultion.vert" />
     <None Include="eToCubemap.frag" />
     <None Include="irradiance.frag" />
     <None Include="irradiance.vert" />
     <None Include="pbr.frag" />
     <None Include="pbr.vert" />
+    <None Include="prefilter.frag" />
+    <None Include="prefilter.vert" />
     <None Include="skybox.frag" />
     <None Include="skybox.vert" />
   </ItemGroup>

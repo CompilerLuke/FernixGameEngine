@@ -26,6 +26,7 @@ void Render::Init() {
 	glCullFace(GL_BACK);
 	glEnable(GL_MULTISAMPLE);
 	glDepthFunc(GL_LESS);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 }
 

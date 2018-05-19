@@ -12,6 +12,8 @@ extern AssetManager assetManager;
 struct TexturesForIBL {
 	unsigned int envMap;
 	unsigned int irradianceMap;
+	unsigned int prefilterMap;
+	unsigned int convolutedBRDFMap;
 };
 
 class Skybox : public Entity {
@@ -19,6 +21,8 @@ private:
 	Shader skybox;
 	unsigned int envCubemap;
 	unsigned int irradianceCubemap;
+	unsigned int prefilterMap;
+	unsigned int convolutedBRDFMap;
 public:
 	Skybox();
 	void Init();

@@ -136,7 +136,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
 	// 5. ambient occlusion maps
 	std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_EMISSIVE, "texture_ao");
-	textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
+	textures.insert(textures.end(), aoMaps.begin(), aoMaps.end());
 
 	std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());

@@ -74,8 +74,8 @@ int main()
 
 	renderer.camera = &camera;
 	renderer.skybox = &skybox;
-	//renderer.SetDirLight(&dirLight);
-	renderer.AddPointLight(&pointLight);
+	renderer.SetDirLight(&dirLight);
+	//renderer.AddPointLight(&pointLight);
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
 	renderer.AddEntity(&pointLight);

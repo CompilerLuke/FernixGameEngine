@@ -7,6 +7,8 @@ in vec3 FragPos;
 in mat3 TBN;
 
 uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D   brdfLUT;  
 
 struct Material {
 	sampler2D diffuse;
@@ -179,18 +181,28 @@ void main()
         Lo += CalcPointLight(pointLights[i], norm, FragPos, viewDir);  
 	}
 
-    //Lo += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
+	vec3 R = reflect(-V, N);   
 
-	vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
+    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+
+	vec3 kS = F;
 	vec3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;	  
+  
 	vec3 irradiance = texture(irradianceMap, N).rgb;
 	vec3 diffuse    = irradiance * albedo;
-	vec3 ambient    = (kD * diffuse) * ao; 
+  
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;   
+	vec2 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+	vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
+  
+	vec3 ambient = (kD * diffuse + specular) * ao; 
 
     vec3 color = ambient + Lo;
 	
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  
    
-    FragColor = vec4(ambient, 1.0);
+    FragColor = vec4(color, 1.0);
 }
