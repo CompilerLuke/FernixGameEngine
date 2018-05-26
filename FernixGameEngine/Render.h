@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Entity.h"
 #include "Light.h"
+#include "Editor.h"
 
 struct Entity;
 class Camera;
@@ -10,6 +11,7 @@ class Light;
 class PointLight;
 class DirLight;
 class Skybox;
+struct Editor;
 
 class Render
 {
@@ -19,8 +21,12 @@ public:
 
 	Camera* camera;
 	Skybox* skybox;
+	Editor* editor;
 	GLFWwindow* window;
+
 	float deltaTime = 0.0f;
+
+	bool inGame = true;
 
 	Render(int,int);
 
@@ -30,6 +36,7 @@ public:
 	void AddPointLight(PointLight *light);
 	void SetDirLight(DirLight* light);
 	void SetLightInfo(Shader s);
+	void SetInGame(bool inGame);
 	void Init();
 
 	~Render();

@@ -20,9 +20,10 @@
 #include "Model.h"
 #include "Skybox.h"
 #include "Entity.h"
+#include "Editor.h"
 
-int SCR_WIDTH = 3840;
-int SCR_HEIGHT = 2160;
+int SCR_WIDTH = 1200; //3840;
+int SCR_HEIGHT = 800; //2160;
 
 const char* title = (char *) "Fernix";
 
@@ -52,10 +53,7 @@ int main()
 	Skybox skybox;
 	skybox.Init();
 
-	// then before rendering, configure the viewport to the original framebuffer's screen dimensions
-	//int scrWidth, scrHeight;
-	//glfwGetFramebufferSize(window, &scrWidth, &scrHeight);
-	//glViewport(0, 0, scrWidth, scrHeight);
+	Editor editor;
 
 	renderer.Init();
 
@@ -73,12 +71,14 @@ int main()
 
 	renderer.camera = &camera;
 	renderer.skybox = &skybox;
+	renderer.editor = &editor;
 	renderer.SetDirLight(&dirLight);
 	//renderer.AddPointLight(&pointLight);
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
 	renderer.AddEntity(&pointLight);
 	renderer.AddEntity(&skybox);
+	renderer.AddEntity(&editor);
 
 	window.gameLoop(gameloop);
 

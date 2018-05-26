@@ -39,13 +39,29 @@ void Input::ScrollCallback(double xoffset, double yoffset)
 	this->scroll_offset = yoffset;
 }
 
-bool Input::keyDown(char keyS) {
-	return window->getKeyDown(keyS);
+void Input::KeyCallback(int key, int action) {
+	keys[key] = action;
+}
+
+bool Input::keyPressed(int keyS) {
+	if (last_frame_keys.find(keyS) == last_frame_keys.end()) {
+		return keyDown(keyS);
+	}
+	return last_frame_keys[keyS] == 0 && keyDown(keyS);
 }
 
 bool Input::keyDown(int key) {
 	return window->getKeyDown(key);
 }
+
+void Input::Clear() {
+	for (std::pair<int, int> element : keys)
+	{
+		last_frame_keys[element.first] = element.second;
+	}
+
+	keys.clear();
+}	
 
 void Input::Init(Window* window) {
 	this->window = window;

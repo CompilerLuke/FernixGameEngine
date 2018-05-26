@@ -18,6 +18,11 @@ void scrollCallback(GLFWwindow* window, double xpos, double ypos) {
 	input->ScrollCallback(xpos, ypos);
 }
 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	Input* input = (Input*)glfwGetWindowUserPointer(window);
+	input->KeyCallback(key, action);
+}
+
 Window::Window(const char* title, Input* input, int width, int height, bool vsync, bool fullscreen) 
 : title(title), vSync(vsync), SCR_WIDTH(width), SCR_HEIGHT(height), input(input), fullscreen(fullscreen) {
 }
@@ -67,8 +72,9 @@ void Window::Init() {
 	
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	glfwSetCursorPosCallback(this->window, cursorPosCallback);
+	glfwSetCursorPosCallback(window, cursorPosCallback);
 	glfwSetScrollCallback(window, scrollCallback);
+	glfwSetKeyCallback(window, keyCallback);
 
 	std::cout << "Initialized window" << std::endl;
 
@@ -76,10 +82,6 @@ void Window::Init() {
 }
 
 bool Window::getKeyDown(int key) {
-	return glfwGetKey(this->window, key) == GLFW_PRESS;
-}
-
-bool Window::getKeyDown(char key) {
 	return glfwGetKey(this->window, key) == GLFW_PRESS;
 }
 
@@ -99,12 +101,11 @@ void Window::gameLoop(void(&func)()) {
 		// ------
 		glfwPollEvents();
 
-		func();
-
-		// apply camera
-
+		func();	
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
+		
+		input->Clear();
 		glfwSwapBuffers(window);
 	}
 
@@ -119,9 +120,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
-
-
-
 
 Window::~Window()
 {

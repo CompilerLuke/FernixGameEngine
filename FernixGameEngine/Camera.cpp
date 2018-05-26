@@ -5,8 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
-#include "Input.h"
 #include <iostream>
+#include "Input.h"
+#include "Render.h"
+
 
 extern Input input;
 

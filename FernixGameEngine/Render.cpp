@@ -55,13 +55,22 @@ void Render::SetLightInfo(Shader shader) {
 	shader.setInt("NR_POINT_LIGHTS", pointLights.size());
 }
 
+void Render::SetInGame(bool inGame) {
+	this->inGame = inGame;
+}
+
 void Render::RenderFrame() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->Update();
+	if (this->inGame) {
+		for (int i = 0; i < entities.size(); i++) {
+			entities[i]->Update();
+		}
+	}
+	else if (this->editor) {
+		editor->Update();
 	}
 
 	for (int i = 0; i < entities.size(); i++) {

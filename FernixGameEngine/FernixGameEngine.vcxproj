@@ -124,6 +124,7 @@
     <ClCompile Include="..\..\..\..\Desktop\Game Engine\glad (2)\src\glad.c" />
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Editor.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Editor.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Input.h" />

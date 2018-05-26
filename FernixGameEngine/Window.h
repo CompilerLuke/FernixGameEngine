@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 struct GLFWwindow;
 class Input;
 
@@ -16,7 +18,6 @@ private:
 public:
 	int SCR_WIDTH, SCR_HEIGHT;
 
-	bool getKeyDown(char key);
 	bool getKeyDown(int key);
 
 	void captureMouse(bool);
