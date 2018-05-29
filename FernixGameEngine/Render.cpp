@@ -71,6 +71,7 @@ void Render::RenderFrame() {
 	}
 	else if (this->editor) {
 		editor->Update();
+		camera->Update();
 	}
 
 	for (int i = 0; i < entities.size(); i++) {

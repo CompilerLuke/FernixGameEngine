@@ -152,5 +152,11 @@
     <None Include="brdf_convultion.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="selected.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="axis.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

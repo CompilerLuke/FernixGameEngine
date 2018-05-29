@@ -22,8 +22,8 @@
 #include "Entity.h"
 #include "Editor.h"
 
-int SCR_WIDTH = 1200; //3840;
-int SCR_HEIGHT = 800; //2160;
+int SCR_WIDTH = 3840;
+int SCR_HEIGHT = 2160;
 
 const char* title = (char *) "Fernix";
 
@@ -54,6 +54,7 @@ int main()
 	skybox.Init();
 
 	Editor editor;
+	editor.selected = &cube;
 
 	renderer.Init();
 
@@ -73,12 +74,13 @@ int main()
 	renderer.skybox = &skybox;
 	renderer.editor = &editor;
 	renderer.SetDirLight(&dirLight);
-	//renderer.AddPointLight(&pointLight);
+	//renderer.AddPointLight(&pointLight);	
+	renderer.AddEntity(&editor);
 	renderer.AddEntity(&cube);
 	renderer.AddEntity(&camera);
 	renderer.AddEntity(&pointLight);
 	renderer.AddEntity(&skybox);
-	renderer.AddEntity(&editor);
+
 
 	window.gameLoop(gameloop);
 
