@@ -56,8 +56,22 @@ void Render::SetLightInfo(Shader shader) {
 }
 
 void Render::SetInGame(bool inGame) {
+	
+	if (inGame && !this->inGame) {
+		for (int i = 0; i < entities.size(); i++) {
+			entities[i]->OnEnterGame();
+		}
+	}
+	else if (!inGame && this->inGame) {
+		for (int i = 0; i < entities.size(); i++) {
+			entities[i]->OnEnterEditor();
+		}
+	}
 	this->inGame = inGame;
 }
+
+long ticks = 0;
+double average = 0;
 
 void Render::RenderFrame() {
 	float currentFrame = glfwGetTime();

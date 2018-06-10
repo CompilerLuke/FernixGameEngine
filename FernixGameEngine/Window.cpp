@@ -76,13 +76,28 @@ void Window::Init() {
 	glfwSetScrollCallback(window, scrollCallback);
 	glfwSetKeyCallback(window, keyCallback);
 
-	std::cout << "Initialized window" << std::endl;
 
+	if (!vSync) {
+		glfwSwapInterval(0);
+	}
+	else {
+		glfwSwapInterval(1);
+	}	
+	
+	std::cout << "Initialized window" << std::endl;
 
 }
 
 bool Window::getKeyDown(int key) {
 	return glfwGetKey(this->window, key) == GLFW_PRESS;
+}
+
+void Window::setMousePos(double xpos, double ypos) {
+	glfwSetCursorPos(this->window, xpos, ypos);
+}
+
+bool Window::getMouseButtonDown(unsigned int key) {
+	return glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
 }
 
 void Window::captureMouse(bool capture) {

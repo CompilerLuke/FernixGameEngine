@@ -19,6 +19,8 @@ public:
 	int SCR_WIDTH, SCR_HEIGHT;
 
 	bool getKeyDown(int key);
+	bool getMouseButtonDown(unsigned int key);
+	void setMousePos(double x, double y);
 
 	void captureMouse(bool);
 	void gameLoop(void (&func)());

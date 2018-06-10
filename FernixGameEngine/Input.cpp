@@ -34,6 +34,13 @@ void Input::CursorPosCallback(double xpos, double ypos)
 	this->mouse_position.y = ypos;
 }
 
+glm::vec2 Input::toScreenPos(double xpos, double ypos) {
+	return glm::vec2(
+		((xpos / window->SCR_WIDTH * 2) - 1),
+		-((ypos / window->SCR_HEIGHT * 2) - 1)
+	);
+}
+
 void Input::ScrollCallback(double xoffset, double yoffset)
 {
 	this->scroll_offset = yoffset;
@@ -48,6 +55,18 @@ bool Input::keyPressed(int keyS) {
 		return keyDown(keyS);
 	}
 	return last_frame_keys[keyS] == 0 && keyDown(keyS);
+}
+
+bool Input::rightClicking() {
+	return window->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT);
+}
+
+bool Input::leftClicking() {
+	return window->getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
+}
+
+void Input::setMousePos(double xpos, double ypos) {
+	window->setMousePos(xpos, ypos);
 }
 
 bool Input::keyDown(int key) {

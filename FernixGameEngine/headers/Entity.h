@@ -5,30 +5,35 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <GLFW/glfw3.h>
+#include <vector>
 
 class Shader;
 class Render;
 class Camera;
 class Model;
 
-struct Transform {
+struct Entity {
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::quat rotation = glm::quat(0.0f,0.0f,0.0f,0.0f);
 	glm::vec3 scale = glm::vec3(1.0f);
 
-	glm::mat4 ModelMatrix();
-};
-
-struct Entity {
-	Transform transform;
 	Model* model;
 	Shader* shader;
 	Render* ctx;
+	Entity* parent;
+	std::vector<Entity*> children;
 
+	virtual void Init() {};
 	virtual void Update();
 	virtual void Render();
+	virtual void OnEnterEditor();
+	virtual void OnEnterGame();
 
-	Entity(Transform transform, Model* model, Shader* shader);
+	glm::mat4 ModelMatrix();
+
+	bool RunningGame();
+
+	Entity(Model* model, Shader* shader);
 	Entity();
 	void SetShaderProps(Shader shader);
 	virtual ~Entity();

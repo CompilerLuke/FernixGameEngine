@@ -8,12 +8,12 @@
 
 void DirLight::setUniforms(unsigned int id, Shader shader) {
 	shader.setVec3("dirLightr.ambient", color);
-	shader.setVec3("dirLight.direction", glm::eulerAngles(transform.rotation));
+	shader.setVec3("dirLight.direction", glm::eulerAngles(rotation));
 }
 
 void PointLight::setUniforms(unsigned int id, Shader shader) {
 	std::string prefix = "pointLights[" + id;
-	shader.setVec3(prefix + "].position", transform.position);
+	shader.setVec3(prefix + "].position", position);
 	shader.setVec3(prefix + "].color", color);
 
 };

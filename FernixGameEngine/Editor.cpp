@@ -1,10 +1,16 @@
 #include "Editor.h"
 #include "Shader.h"
+#include "Camera.h"
+#include "Entity.h"
+#include <math.h>
+#include "Manipulator.h"
 
 class Input;
 extern Input input;
 
-Editor::Editor() : Entity() {
+glm::vec2 offset;
+
+Editor::Editor() : Entity(), manipulator(this) {
 	this->shader = new Shader("pbr.vert", "selected.frag");
 }
 
@@ -16,20 +22,19 @@ void Editor::Update() {
 	}
 	if (input.keyPressed(GLFW_KEY_G)) {
 		movingSelected = true;
+		manipulator = Manipulator(selected); //initialize new copy
+		manipulator.ctx = ctx;
+		manipulator.Init();
 	}
-	if (!this->ctx->inGame && movingSelected) {
-		if (input.keyPressed(GLFW_KEY_X)) {
-			axis = Axis::X;
-			std::cout << "axis x" << std::endl;
-		}
-		else if (input.keyPressed(GLFW_KEY_Y)) {
-			axis = Axis::Y;
-		}
-		else if (input.keyPressed(GLFW_KEY_Z)) {
-			axis = Axis::Z;
-		}
+	if (input.keyPressed(GLFW_KEY_ESCAPE)) {
+		movingSelected = false;
+	}
+
+	if (selected && movingSelected) {
+		manipulator.Update();
 	}
 }
+
 float line_vertex[] =
 {
 	1.0, 0.0, 0.0,
@@ -61,37 +66,21 @@ void Editor::Render() {
 	if (!ctx->inGame) {
 		if (selected) {
 			Shader* normalShader = selected->shader;
+
+
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			selected->shader = this->shader;
 			selected->shader->use();
 			selected->shader->setVec3("color", glm::vec3(0.5, 0.5, 0));
 			selected->Render();
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		
-
-			if (movingSelected && axis != None) {
-				if (axis != None) {					
-					line.shader.use();
-					this->SetShaderProps(line.shader);
-					switch (axis) {
-					case X:
-						selected->shader->setVec3("color", glm::vec3(0, 1, 0));
-						break;
-					case Y:
-						selected->shader->setVec3("color", glm::vec3(1, 0, 0));
-						break;
-					case Z:
-						selected->shader->setVec3("color", glm::vec3(0, 0, 1));
-						break;
-					}
-
-					line.Render();
-				}
-			}
-
 
 			
 			selected->shader = normalShader;
+
+			if (movingSelected) {
+				manipulator.Render();
+			}
 		}
 	}
 }

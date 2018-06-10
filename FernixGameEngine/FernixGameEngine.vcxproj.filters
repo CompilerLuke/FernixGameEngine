@@ -59,6 +59,9 @@
     <ClCompile Include="Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Manipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="VertexShader.vert">
@@ -112,6 +115,9 @@
     <ClInclude Include="Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg">
@@ -156,6 +162,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="axis.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="line.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="line.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

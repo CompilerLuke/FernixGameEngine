@@ -79,9 +79,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\User\source\repos\FernixGameEngine\FernixGameEngine\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Users\User\Desktop\Game Engine\OpenGl libraries and headers\Libs\glfw3.lib;C:\Users\User\Desktop\Game Engine\OpenGl libraries and headers\Libs\assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\User\Desktop\Game Engine\OpenGl libraries and headers\Libs\glfw3.lib;C:\Users\User\Desktop\Game Engine\OpenGl libraries and headers\Libs\assimp-vc140-mt.lib;C:\Users\User\Desktop\Game Engine\OpenGl libraries and headers\Libs\libgizmoDebug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,6 +130,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manipulator.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -149,6 +151,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Manipulator.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Property.h" />
@@ -168,6 +171,8 @@
     <None Include="eToCubemap.frag" />
     <None Include="irradiance.frag" />
     <None Include="irradiance.vert" />
+    <None Include="line.frag" />
+    <None Include="line.vert" />
     <None Include="pbr.frag" />
     <None Include="pbr.vert" />
     <None Include="prefilter.frag" />

@@ -21,9 +21,13 @@ public:
 	Window* window;
 
 	void captureMouse(bool);
+	bool rightClicking();
+	bool leftClicking();
 	bool keyDown(int key);
 	bool keyPressed(int key);
+	void setMousePos(double xpos, double ypos);
 	
+	glm::vec2 toScreenPos(double xpos, double ypos);
 
 	Input();
 	void ScrollCallback(double xpos, double ypos);

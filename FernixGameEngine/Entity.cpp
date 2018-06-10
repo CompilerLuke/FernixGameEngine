@@ -14,8 +14,15 @@
 class Render;
 class Camera;
 
-glm::mat4 Transform::ModelMatrix() {
-	glm::mat4 matrix = glm::mat4(1.0f);
+glm::mat4 Entity::ModelMatrix() {
+	glm::mat4 matrix;
+
+	if (parent) {
+		matrix = parent->ModelMatrix();
+	}
+	else {
+		matrix = glm::mat4(1);
+	}
 
 	matrix = glm::translate(matrix, position);
 	matrix *= glm::mat4_cast(rotation);
@@ -27,17 +34,16 @@ glm::mat4 Transform::ModelMatrix() {
 	return matrix; //check if this doesnt cause some kind of scope error
 }
 
-Entity::Entity(Transform transform, Model* model, Shader* shader)
+Entity::Entity(Model* model, Shader* shader)
 {
-	transform = transform;
 	model = model;
 	shader = shader;
 }
 
 Entity::Entity() {
-	transform = Transform();
 	model = NULL;
 	shader = NULL;
+	parent = NULL;
 }
 
 void Entity::SetShaderProps(Shader shader) {
@@ -47,18 +53,24 @@ void Entity::SetShaderProps(Shader shader) {
 	glm::mat4 view = ctx->camera->GetViewMatrix();
 	shader.setMat4("view", view);
 
-	glm::mat4 model = this->transform.ModelMatrix();
+	while (true) {
+
+	}
+	glm::mat4 model = this->ModelMatrix();
 	glm::mat3 normalModel = glm::transpose(glm::inverse(model));
 
 	shader.setMat4("model", model);
 	shader.setMat3("normalModel", normalModel);
-	shader.setVec3("viewPos", camera->transform.position);
+	shader.setVec3("viewPos", camera->position);
 	shader.setMat4("projection", camera->GetProjectionMatrix());
 
 	ctx->SetLightInfo(shader);
 }
 
 void Entity::Update() {};
+void Entity::OnEnterGame() {};
+void Entity::OnEnterEditor() {};
+
 void Entity::Render() {
 	if (shader && model) {
 		shader->use();
@@ -66,6 +78,10 @@ void Entity::Render() {
 		model->Render(*shader, ctx->skybox);
 	}
 };
+
+bool Entity::RunningGame() {
+	return this->ctx->inGame;
+}
 
 Entity::~Entity()
 {

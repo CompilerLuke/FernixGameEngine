@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Input.h"
+#include "Manipulator.h"
 
 enum Axis {
 	X,
@@ -22,6 +23,7 @@ struct Line {
 
 struct Editor : Entity {
 	Entity* selected;
+	Manipulator manipulator;
 	bool movingSelected = false;
 	Axis axis = None;
 	Line line;

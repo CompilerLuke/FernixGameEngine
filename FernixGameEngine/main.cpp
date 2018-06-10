@@ -18,12 +18,12 @@
 #include "Window.h"
 #include "AssetManager.h"
 #include "Model.h"
-#include "Skybox.h"
+#include "Skybox.h" 
 #include "Entity.h"
 #include "Editor.h"
 
-int SCR_WIDTH = 3840;
-int SCR_HEIGHT = 2160;
+int SCR_WIDTH = 2000;//3840;
+int SCR_HEIGHT = 1600;//2160;
 
 const char* title = (char *) "Fernix";
 
@@ -49,6 +49,8 @@ int main()
 
 	Shader ourShader("pbr.vert", "pbr.frag");
 	Entity cube;
+	Entity cube1;
+	Entity cube2;
 
 	Skybox skybox;
 	skybox.Init();
@@ -59,28 +61,33 @@ int main()
 	renderer.Init();
 
 	//cube.transform.rotation = glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	cube.transform.scale = glm::vec3(0.001f);
+	//cube.transform.scale = glm::vec3(0.001f);
 	cube.shader = &ourShader;
 	cube.model = &gun;
+	cube.scale = glm::vec3(0.1);
+
 
 	PointLight pointLight;
-	pointLight.transform.position.y = 3.0f;
-	pointLight.transform.position.x = 3.0f;
+	pointLight.position.y = 3.0f;
+	pointLight.position.x = 3.0f;
 
 	DirLight dirLight;
-	dirLight.transform.rotation = glm::angleAxis(45.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+	dirLight.rotation = glm::angleAxis(45.0f, glm::vec3(1.0f, 1.0f, 0.0f));
 
 	renderer.camera = &camera;
 	renderer.skybox = &skybox;
 	renderer.editor = &editor;
 	renderer.SetDirLight(&dirLight);
 	//renderer.AddPointLight(&pointLight);	
-	renderer.AddEntity(&editor);
+
 	renderer.AddEntity(&cube);
+	//renderer.AddEntity(&cube1);
+	//renderer.AddEntity(&cube2);
 	renderer.AddEntity(&camera);
 	renderer.AddEntity(&pointLight);
-	renderer.AddEntity(&skybox);
-
+	renderer.AddEntity(&skybox);	
+	
+	renderer.AddEntity(&editor);
 
 	window.gameLoop(gameloop);
 

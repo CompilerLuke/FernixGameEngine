@@ -34,10 +34,14 @@ public:
 	// Euler Angles
 	float Yaw;
 	float Pitch;
+	float OffsetOfYaw = 0;
+	float OffsetOfPitch = 0;
 	// Camera options
 	float MovementSpeed;
 	float MouseSensitivity;
 	float Zoom;
+
+	bool firstRightClick = true;
 
 	Camera(float SCR_WIDTH=2000, float SCR_HEIGHT=1800, glm::vec3 position = glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 	Camera(float SCR_WIDTH, float SCR_HEIGHT, float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);

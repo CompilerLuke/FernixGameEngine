@@ -9,10 +9,9 @@
 #include "Input.h"
 #include "Render.h"
 
-
 extern Input input;
 
-Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Entity(), Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
 	Position = position;
 	WorldUp = up;
@@ -20,47 +19,84 @@ Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 
 	Pitch = pitch;
 	projection = glm::perspective(glm::radians(Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	updateCameraVectors();
-	this->transform.position = position;
+	this->position = position;
 }
 
-Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Entity(), Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
 	Position = glm::vec3(posX, posY, posZ);
 	WorldUp = glm::vec3(upX, upY, upZ);
 	Yaw = yaw;
 	Pitch = pitch;
 	projection = glm::perspective(glm::radians(Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-	this->transform.position = Position;
+	position = Position;
 	updateCameraVectors();
 }
 
 void Camera::Update() {
+	float movementSpeed = MovementSpeed;
+	if (input.keyDown(GLFW_KEY_LEFT_SHIFT)) {
+		movementSpeed *= 2.0;
+	}
 	float deltaTime = ctx->deltaTime;
-	float velocity = MovementSpeed * deltaTime;
+	float velocity = movementSpeed * deltaTime;
 	if (input.keyDown(GLFW_KEY_W)) {
-		this->transform.position += Front * velocity;
+		position += Front * velocity;
 	}
 	if (input.keyDown(GLFW_KEY_S))
-		this->transform.position -= Front * velocity;
+		position -= Front * velocity;
 	if (input.keyDown(GLFW_KEY_A))
-		this->transform.position  -= Right * velocity;
+		position  -= Right * velocity;
 	if (input.keyDown(GLFW_KEY_D))
-		this->transform.position += Right * velocity;
+		position += Right * velocity;
 
+	if (!RunningGame()) {
+		if (input.rightClicking()) {
+			if (firstRightClick) {
+				OffsetOfYaw = Yaw;
+				OffsetOfPitch = Pitch;
+				firstRightClick = false;
+				input.mouse_offset.x = 0;
+				input.mouse_offset.y = 0;
+				input.captureMouse(true);
+			}
+		}
+		else {
+			if (!firstRightClick) {
+				input.captureMouse(false);
+			}
+			
+			firstRightClick = true;
+			return;
+		}
+	}
+	else {
+		firstRightClick = true;
+	}
+	
 	float xoffset = input.mouse_offset.x;
 	float yoffset = input.mouse_offset.y;
 
-	Yaw = xoffset * MouseSensitivity;
-	Pitch = yoffset * MouseSensitivity;
+	Yaw = (xoffset * MouseSensitivity) + OffsetOfYaw;
+	Pitch = (yoffset * MouseSensitivity) + OffsetOfPitch;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
 
-	if (Pitch > 89.0f)
+	if (Pitch > 89.0f) {
 		Pitch = 89.0f;
+	}
 	if (Pitch < -89.0f)
 		Pitch = -89.0f;
+	if (Yaw > 360.0f) {
+		Yaw -= 360.0f;
+		input.mouse_offset.x -= ctx->SCR_WIDTH * MouseSensitivity;
+	}
+	if (Yaw < -360.0f) {
+		Yaw += 360.0f;
+		input.mouse_offset.x += ctx->SCR_WIDTH * MouseSensitivity;
+	}
 
-	this->transform.rotation = glm::angleAxis(glm::radians(90.f), glm::vec3(Pitch / 90.0f, Yaw / 90.0f, 0.f));
+	rotation = glm::angleAxis(glm::radians(90.f), glm::vec3(Pitch / 90.0f, Yaw / 90.0f, 0.f));
 	
 	// Update Front, Right and Up Vectors using the updated Euler angles
 	updateCameraVectors();
@@ -94,7 +130,7 @@ void Camera::updateCameraVectors()
 
 glm::mat4 Camera::GetViewMatrix()
 {
-	return glm::lookAt(this->transform.position, this->transform.position + Front, Up);
+	return glm::lookAt(position, position + Front, Up);
 }
 
 glm::mat4 Camera::GetProjectionMatrix() {
