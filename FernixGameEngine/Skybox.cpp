@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "AssetManager.h"
 
-Skybox::Skybox() : skybox("skybox.vert", "skybox.frag") {}
+Skybox::Skybox() : skybox("assets/shaders/skybox.vert", "assets/shaders/skybox.frag") {}
 
 TexturesForIBL setupIBL();
 
@@ -248,7 +248,7 @@ void renderQuad()
 TexturesForIBL setupIBL() {
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-	Shader equirectangularToCubemapShader("eToCubemap.vert", "eToCubemap.frag");
+	Shader equirectangularToCubemapShader("assets/shaders/eToCubemap.vert", "assets/shaders/eToCubemap.frag");
 	// ---------------------------------
 	unsigned int captureFBO;
 	unsigned int captureRBO;
@@ -262,7 +262,7 @@ TexturesForIBL setupIBL() {
 
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrComponents;
-	float *data = stbi_loadf(assetManager.absolute("LA_Downtown_Helipad_GoldenHour_3k.hdr").c_str(), &width, &height, &nrComponents, 0);
+	float *data = stbi_loadf(assetManager.absolute("assets/LA_Downtown_Helipad_GoldenHour_3k.hdr").c_str(), &width, &height, &nrComponents, 0);
 	unsigned int hdrTexture;
 	if (data)
 	{
@@ -334,8 +334,7 @@ TexturesForIBL setupIBL() {
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 	//irradiance
-	std::cout << "irradianceShader" << std::endl;
-	Shader irradianceShader("irradiance.vert", "irradiance.frag");
+	Shader irradianceShader("assets/shaders/irradiance.vert", "assets/shaders/irradiance.frag");
 
 	unsigned int irradianceMap;
 	glGenTextures(1, &irradianceMap);
@@ -389,7 +388,7 @@ TexturesForIBL setupIBL() {
 
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	Shader prefilterShader("prefilter.vert", "prefilter.frag");
+	Shader prefilterShader("assets/shaders/prefilter.vert", "assets/shaders/prefilter.frag");
 
 	prefilterShader.use();
 	prefilterShader.setInt("environmentMap", 0);
@@ -423,7 +422,7 @@ TexturesForIBL setupIBL() {
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	Shader brdfShader("brdf_convultion.vert", "brdf_convultion.frag");
+	Shader brdfShader("assets/shaders/brdf_convultion.vert", "assets/shaders/brdf_convultion.frag");
 
 	unsigned int brdfLUTTexture;
 	glGenTextures(1, &brdfLUTTexture);

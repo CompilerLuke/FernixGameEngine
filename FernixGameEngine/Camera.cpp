@@ -57,14 +57,14 @@ void Camera::Update() {
 				OffsetOfPitch = Pitch;
 				firstRightClick = false;
 				input.mouse_offset.x = 0;
-				input.mouse_offset.y = 0;
+				input.mouse_offset.y = 0; 
 				input.captureMouse(true);
 			}
 		}
 		else {
-			if (!firstRightClick) {
+			if (!firstRightClick) {				
 				input.captureMouse(false);
-			}
+			}				
 			
 			firstRightClick = true;
 			return;
@@ -89,11 +89,11 @@ void Camera::Update() {
 		Pitch = -89.0f;
 	if (Yaw > 360.0f) {
 		Yaw -= 360.0f;
-		input.mouse_offset.x -= ctx->SCR_WIDTH * MouseSensitivity;
+		input.mouse_offset.x -= 360 * MouseSensitivity;
 	}
 	if (Yaw < -360.0f) {
 		Yaw += 360.0f;
-		input.mouse_offset.x += ctx->SCR_WIDTH * MouseSensitivity;
+		input.mouse_offset.x += 360 * MouseSensitivity;
 	}
 
 	rotation = glm::angleAxis(glm::radians(90.f), glm::vec3(Pitch / 90.0f, Yaw / 90.0f, 0.f));

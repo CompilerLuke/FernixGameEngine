@@ -13,6 +13,8 @@ public:
 	glm::vec2 mouse_offset = glm::vec2(0.0f, 0.0f);
 	float scroll_offset = 0;
 
+	bool capturingMouse = false;
+
 	std::unordered_map<int, int> last_frame_keys;
 	std::unordered_map<int, int> keys;
 

@@ -8,6 +8,10 @@
 
 #include "Input.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_glfw.h"
+
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	Input* input = (Input*)glfwGetWindowUserPointer(window);
 	input->CursorPosCallback(xpos, ypos);
@@ -74,7 +78,6 @@ void Window::Init() {
 
 	glfwSetCursorPosCallback(window, cursorPosCallback);
 	glfwSetScrollCallback(window, scrollCallback);
-	glfwSetKeyCallback(window, keyCallback);
 
 
 	if (!vSync) {
@@ -85,6 +88,23 @@ void Window::Init() {
 	}	
 	
 	std::cout << "Initialized window" << std::endl;
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+
+	ImGui_ImplOpenGL3_Init();
+
+	ImGui_ImplGlfw_SetKeyCallback(window, &keyCallback);
+
+	// Setup style
+	ImGui::StyleColorsDark();
+	
+	
+	std::cout << "initialized imgui" << std::endl;
 
 }
 
@@ -110,20 +130,36 @@ void Window::captureMouse(bool capture) {
 }
 
 void Window::gameLoop(void(&func)()) {
+	// Start the ImGui frame
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// render
 		// ------
-		glfwPollEvents();
+		glfwPollEvents();	
+		
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
 		func();	
+		input->Clear();
+		
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
-		
-		input->Clear();
+
 		glfwSwapBuffers(window);
 	}
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 

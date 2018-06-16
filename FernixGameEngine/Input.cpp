@@ -9,6 +9,7 @@
 #include <iostream>
 
 void Input::captureMouse(bool capture) {
+	capturingMouse = capture;
 	window->captureMouse(capture);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
@@ -24,11 +25,12 @@ void Input::CursorPosCallback(double xpos, double ypos)
 		this->firstMouse = false;
 	}
 
-	float xoffset = xpos - this->mouse_position.x;
-	float yoffset = this->mouse_position.y - ypos; // reversed since y-coordinates go from bottom to top
-
-	this->mouse_offset.x += xoffset;
-	this->mouse_offset.y += yoffset;
+	if (capturingMouse) {
+		float xoffset = xpos - this->mouse_position.x;
+		float yoffset = this->mouse_position.y - ypos; // reversed since y-coordinates go from bottom to to
+		this->mouse_offset.x += xoffset;
+		this->mouse_offset.y += yoffset;
+	}
 
 	this->mouse_position.x = xpos;
 	this->mouse_position.y = ypos;

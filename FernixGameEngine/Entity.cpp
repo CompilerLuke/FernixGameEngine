@@ -53,9 +53,6 @@ void Entity::SetShaderProps(Shader shader) {
 	glm::mat4 view = ctx->camera->GetViewMatrix();
 	shader.setMat4("view", view);
 
-	while (true) {
-
-	}
 	glm::mat4 model = this->ModelMatrix();
 	glm::mat3 normalModel = glm::transpose(glm::inverse(model));
 

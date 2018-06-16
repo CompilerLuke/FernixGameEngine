@@ -22,8 +22,8 @@
 #include "Entity.h"
 #include "Editor.h"
 
-int SCR_WIDTH = 2000;//3840;
-int SCR_HEIGHT = 1600;//2160;
+int SCR_WIDTH = 3840;
+int SCR_HEIGHT = 2160;
 
 const char* title = (char *) "Fernix";
 
@@ -45,9 +45,11 @@ int main()
 	window.Init();
 	input.captureMouse(true);
 
-	Model gun(assetManager.absolute("PISTOL/pistol.obj"));
 
-	Shader ourShader("pbr.vert", "pbr.frag");
+
+	Model gun(assetManager.absolute("assets/PISTOL/pistol.obj"));
+
+	Shader ourShader("assets/shaders/pbr.vert", "assets/shaders/pbr.frag");
 	Entity cube;
 	Entity cube1;
 	Entity cube2;
@@ -58,7 +60,7 @@ int main()
 	Editor editor;
 	editor.selected = &cube;
 
-	renderer.Init();
+	renderer.Init();	
 
 	//cube.transform.rotation = glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//cube.transform.scale = glm::vec3(0.001f);
