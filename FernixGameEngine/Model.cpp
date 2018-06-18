@@ -5,12 +5,26 @@
 #include <map>
 #include <vector>
 #include "Model.h"
+#include "metalib/meta.h"
+
+DEFTYPE(Texture, NULL,
+	MEMBER(Texture, type, string),
+	MEMBER(Texture, path, string)
+);
+
+DEFTYPE(Model, NULL,
+	MEMBER_NT(Model, textures_loaded, ARRAY(Texture))
+);
 
 /*  Functions   */
 // constructor, expects a filepath to a 3D model.
 Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma)
 {
 	loadModel(path);
+}
+
+Model::Model() : gammaCorrection(true) {
+
 }
 
 // draws the model, and thus all its meshes

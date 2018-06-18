@@ -5,7 +5,8 @@
 #include <math.h>
 #include "imgui/imgui.h"
 
-#include "imgizmo\imguizmo.h"
+#include "imgizmo/imguizmo.h"
+#include "metalib/meta.h"
 
 class Input;
 extern Input input;
@@ -24,38 +25,103 @@ void Editor::Update() {
 	}
 	if (input.keyPressed(GLFW_KEY_G)) {
 		movingSelected = true;
-		std::cout << "moving" << std::endl;
+		scalingSelected = false;
+		rotatingSelected = false;
+	}
+	if (input.keyPressed(GLFW_KEY_S)) {
+		movingSelected = false;
+		scalingSelected = true;
+		rotatingSelected = false;
 	}
 	if (input.keyPressed(GLFW_KEY_ESCAPE)) {
 		movingSelected = false;
 	}
 }
 
-float line_vertex[] =
-{
-	1.0, 0.0, 0.0,
-	-1.0, 0.0, 0.0
+void renderStruct(StructType* type, void* data);
+
+unsigned int uniqueName = 0;
+
+void renderProperty(const Member& member, void* structData) {
+	void* fieldP = (char*)structData + member.offset;
+
+	switch (member.type->type) {
+	case TypeEnum::Struct: {
+		ImGui::Text(member.name.c_str());
+		ImGui::NewLine();
+		//ImGui::Indent();
+		renderStruct((StructType*)member.type, fieldP);
+		//ImGui::Unindent();
+		break;
+	}
+	case TypeEnum::Int: 
+		ImGui::InputInt(member.name.c_str(), (int*)fieldP);
+
+
+		break;
+	case TypeEnum::Float:
+		uniqueName++;
+		ImGui::InputFloat(std::to_string(uniqueName).c_str(), (float*)fieldP);
+		break;
+	case TypeEnum::Pointer: {
+		renderProperty(Member(member.name, 0, ((PointerType*)member.type)->type), *(void**)fieldP);
+		break;
+	}
+	case TypeEnum::Array: {
+		//ImGui::Indent();
+		std::vector<char> array = *(std::vector<char>*)fieldP;
+		ArrayType* arrayType = (ArrayType*)member.type;
+
+
+		unsigned int len = array.size() / sizeOf(arrayType->type);
+
+
+		for (unsigned int i = 0; i < len; i++) { //divide by sizeof arrayType
+			Member member(std::to_string(i), i * sizeOf(arrayType->type), arrayType->type);
+			renderProperty(member, array.data());
+		}
+		//ImGui::Unindent();
+		break;
+	}
+	case TypeEnum::String: {
+
+		std::string s = *(std::string*)fieldP;
+		ImGui::Text((member.name + " : " + s).c_str());
+		break;
+	}
+	default: {
+		std::string s = member.name + " : unknown type";
+		ImGui::Text(s.c_str());
+		ImGui::NewLine();
+	}
+	}
 };
 
-Line::Line() : shader(Shader("assets/shaders/axis.vert", "assets/shaders/selected.frag")) {
-	// create buffers/arrays
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), &line_vertex[0], GL_STATIC_DRAW);
-
-	// set the vertex attribute pointers
-	// vertex Positions
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+void renderStruct(StructType* type, void* data) {
+	if (type->isTyped) {
+		type = (StructType*)toRealType(((Typed*)data)->type); //for polymorphic objects
+	}
+	ImGui::Text(type->name.c_str());
+	ImGui::NewLine();
+	//ImGui::Indent();
+	for (unsigned int i = 0; i < type->members.size(); i++) {
+		renderProperty(type->members[i], data);
+	}
+	//ImGui::Unindent();
 }
 
-void Line::Render() {
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_LINES, 0, 2);
-	glBindVertexArray(0);
+void renderProperties(Entity* selected) {
+	uniqueName = 0;
+	ImGui::NewLine();
+
+	Type* type = toRealType(selected->type);
+
+	if (selected->type->type != TypeEnum::Struct) {
+		ImGui::Text("Expecting type to be of type Struct or Class");
+		return;
+	}
+
+	renderStruct((StructType*)type, selected);
 }
 
 void Editor::Render() {					
@@ -63,18 +129,9 @@ void Editor::Render() {
 	
 	if (!ctx->inGame) {
 		if (selected) {
+			renderProperties(selected);
+
 			Shader* normalShader = selected->shader;
-
-			{
-				ImGui::NewLine();
-
-
-				ImGui::InputFloat3("Position", glm::value_ptr(selected->position), 3);
-				ImGui::InputFloat3("Rotation", &selected->rotation.x, 3);
-				ImGui::InputFloat3("Scale", glm::value_ptr(selected->scale), 3);
-
-				ImGui::NewLine();
-			}
 
 			glm::vec3 scale = selected->scale;
 
@@ -92,7 +149,16 @@ void Editor::Render() {
 			
 			selected->shader = normalShader;
 
-			if (movingSelected) {
+			if (movingSelected || scalingSelected) {
+				if (selected->position.x == 0) {
+					selected->position.x = 0.0001f;
+				}
+				if (selected->position.y == 0) {
+					selected->position.y = 0.0001f;
+				}
+				if (selected->position.z == 0) {
+					selected->position.z = 0.0001f;
+				}
 				glm::mat4 modelMatrix = selected->ModelMatrix();
 				glm::mat4 deltaMatrix;
 
@@ -111,11 +177,19 @@ void Editor::Render() {
 				ImGuizmo::SetOrthographic(false);
 
 				ImGuizmo::SetRect(0, 0, ctx->SCR_WIDTH, ctx->SCR_HEIGHT);
+
+				ImGuizmo::OPERATION mode;
+				if (movingSelected) {
+					mode = ImGuizmo::TRANSLATE;
+				}
+				else if (scalingSelected) {
+					mode = ImGuizmo::SCALE;
+				}
 				
 				ImGuizmo::Manipulate(
 					viewMatrixF, 
 					projectionMatrixF, 
-					ImGuizmo::TRANSLATE, 
+					mode, 
 					ImGuizmo::WORLD, 
 					modelMatrixF, 
 					deltaMatrixF

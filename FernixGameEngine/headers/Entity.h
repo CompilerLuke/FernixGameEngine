@@ -6,13 +6,14 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "metalib/meta.h"
 
 class Shader;
 class Render;
 class Camera;
 class Model;
 
-struct Entity {
+struct Entity : Typed {
 	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::quat rotation = glm::quat(0.0f,0.0f,0.0f,0.0f);
 	glm::vec3 scale = glm::vec3(1.0f);
@@ -38,4 +39,7 @@ struct Entity {
 	void SetShaderProps(Shader shader);
 	virtual ~Entity();
 };
+
+extern StructType* EntityType;
+extern StructType* glm_vec3Type;
 

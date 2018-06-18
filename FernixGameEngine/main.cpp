@@ -29,7 +29,7 @@ const char* title = (char *) "Fernix";
 
 Input input;
 
-Window window(title, &input, SCR_WIDTH, SCR_HEIGHT, true, false);
+Window window(title, &input, SCR_WIDTH, SCR_HEIGHT, false, false);
 Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(-3.0f, 0.0f, 0.0f));
 AssetManager assetManager;
 Render renderer(SCR_WIDTH, SCR_HEIGHT);

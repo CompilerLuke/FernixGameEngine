@@ -21,6 +21,9 @@
     <Filter Include="Source Files\vendor\imgizmo">
       <UniqueIdentifier>{18c9d58e-de5b-4749-a372-fb32c678dc2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\vendor\metalib">
+      <UniqueIdentifier>{9e089aaf-018f-4895-87e1-1bc2c0387e53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -86,6 +89,9 @@
     <ClCompile Include="vendor\imgizmo\ImGuizmo.cpp">
       <Filter>Source Files\vendor\imgizmo</Filter>
     </ClCompile>
+    <ClCompile Include="vendor\metalib\meta.cpp">
+      <Filter>Source Files\vendor\metalib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="VertexShader.vert">
@@ -117,16 +123,7 @@
     <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Skybox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\imgui\imconfig.h">
@@ -163,6 +160,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\metalib\meta.h">
+      <Filter>Source Files\vendor\metalib</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

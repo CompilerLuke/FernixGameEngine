@@ -37,7 +37,6 @@ public:
 	float OffsetOfYaw = 0;
 	float OffsetOfPitch = 0;
 
-	glm::vec2 mousePos;
 	// Camera options
 	float MovementSpeed;
 	float MouseSensitivity;

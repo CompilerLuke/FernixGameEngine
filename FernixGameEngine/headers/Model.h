@@ -18,6 +18,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "metalib/meta.h"
 
 class Skybox;
 
@@ -35,6 +36,7 @@ public:
 	/*  Functions   */
 	// constructor, expects a filepath to a 3D model.
 	Model(std::string const &path, bool gamma = false);
+	Model();
 	// draws the model, and thus all its meshes
 	void Render(Shader shader, Skybox* skybox);
 
@@ -53,3 +55,6 @@ private:
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 };
 
+#include "metalib/meta.h"
+
+extern StructType* ModelType;

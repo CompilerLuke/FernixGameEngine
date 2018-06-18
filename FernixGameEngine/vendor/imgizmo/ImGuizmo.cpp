@@ -27,6 +27,9 @@
 #include <imgui\imgui_internal.h>
 #include "ImGuizmo.h"
 
+
+#include <algorithm>
+
 // includes patches for multiview from
 // https://github.com/CedricGuillemet/ImGuizmo/issues/15
 
@@ -706,7 +709,7 @@ namespace ImGuizmo
       if (fabsf(denom) < FLT_EPSILON)  // normal is orthogonal to vector, cant intersect
          return -1.0f;
 
-      return -(numer / denom);
+	  return -(numer / denom);
    }
 
    static bool IsInContextRect( ImVec2 p )
@@ -1524,7 +1527,7 @@ namespace ImGuizmo
 
        const ImVec2 posOnPlanScreen = worldToPos(posOnPlan, gContext.mViewProjection);
        const ImVec2 axisStartOnScreen = worldToPos(gContext.mModel.v.position + dirAxis * gContext.mScreenFactor * 0.1f, gContext.mViewProjection);
-       const ImVec2 axisEndOnScreen = worldToPos(gContext.mModel.v.position + dirAxis * gContext.mScreenFactor, gContext.mViewProjection);
+       const ImVec2 axisEndOnScreen = worldToPos(gContext.mModel.v.position +  dirAxis * gContext.mScreenFactor, gContext.mViewProjection);
 
        vec_t closestPointOnAxis = PointOnSegment(makeVect(posOnPlanScreen), makeVect(axisStartOnScreen), makeVect(axisEndOnScreen));
 

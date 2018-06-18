@@ -11,8 +11,22 @@
 #include "Skybox.h"
 #include <iostream>
 
+#include "metalib/meta.h"
+
 class Render;
 class Camera;
+
+DEFTYPE_NAMESPACE(glm, vec3, NULL,
+	MEMBER(glm::vec3, x, float),
+	MEMBER(glm::vec3, y, float),
+	MEMBER(glm::vec3, z, float),
+);
+
+DEFTYPE(Entity, Typed,
+	MEMBER(Entity, position, glm_vec3),
+	MEMBER(Entity, scale, glm_vec3),
+	//MEMBER_NT(Entity, model, POINTER(Model))
+);
 
 glm::mat4 Entity::ModelMatrix() {
 	glm::mat4 matrix;
@@ -34,13 +48,13 @@ glm::mat4 Entity::ModelMatrix() {
 	return matrix; //check if this doesnt cause some kind of scope error
 }
 
-Entity::Entity(Model* model, Shader* shader)
+Entity::Entity(Model* model, Shader* shader) : Typed(EntityType)
 {
 	model = model;
 	shader = shader;
 }
 
-Entity::Entity() {
+Entity::Entity() : Typed(EntityType) {
 	model = NULL;
 	shader = NULL;
 	parent = NULL;
