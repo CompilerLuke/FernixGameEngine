@@ -22,8 +22,15 @@ DEFTYPE_NAMESPACE(glm, vec3, NULL,
 	MEMBER(glm::vec3, z, float),
 );
 
+DEFTYPE_NAMESPACE(glm, quat, NULL,
+	MEMBER(glm::quat, x, float),
+	MEMBER(glm::quat, y, float),
+	MEMBER(glm::quat, z, float),
+)
+
 DEFTYPE(Entity, Typed,
 	MEMBER(Entity, position, glm_vec3),
+	MEMBER(Entity, rotation, glm_quat),
 	MEMBER(Entity, scale, glm_vec3),
 	//MEMBER_NT(Entity, model, POINTER(Model))
 );

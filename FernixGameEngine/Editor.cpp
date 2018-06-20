@@ -28,30 +28,51 @@ void Editor::Update() {
 		scalingSelected = false;
 		rotatingSelected = false;
 	}
-	if (input.keyPressed(GLFW_KEY_S)) {
+	if (input.keyPressed(GLFW_KEY_T)) { //cant use S because it is used for movement
 		movingSelected = false;
 		scalingSelected = true;
 		rotatingSelected = false;
 	}
+	if (input.keyPressed(GLFW_KEY_R)) {
+		movingSelected = false;
+		scalingSelected = false;
+		rotatingSelected = true;
+	}
 	if (input.keyPressed(GLFW_KEY_ESCAPE)) {
 		movingSelected = false;
+		scalingSelected = false;
+		rotatingSelected = false;
 	}
 }
 
 void renderStruct(StructType* type, void* data);
-
-unsigned int uniqueName = 0;
 
 void renderProperty(const Member& member, void* structData) {
 	void* fieldP = (char*)structData + member.offset;
 
 	switch (member.type->type) {
 	case TypeEnum::Struct: {
+		StructType* structT = (StructType*)member.type;
+		if (structT->name == "glm_vec3") {
+			ImGui::InputFloat3(member.name.c_str(), glm::value_ptr(*(glm::vec3*)fieldP));
+			return;
+		}
+		if (structT->name == "glm_quat") {
+			glm::quat q = *(glm::quat*)fieldP;
+			glm::vec3 eulerAngles = glm::eulerAngles(q);
+			eulerAngles.x = glm::degrees(eulerAngles.x);
+			eulerAngles.y = glm::degrees(eulerAngles.y);
+			eulerAngles.z = glm::degrees(eulerAngles.z);
+
+			ImGui::InputFloat3(member.name.c_str(), glm::value_ptr(eulerAngles));
+
+			*(glm::quat*)fieldP = glm::quat(glm::vec3(glm::radians(eulerAngles.x), glm::radians(eulerAngles.y), glm::radians(eulerAngles.z))); //might work not sure though
+			
+			return;
+		}
 		ImGui::Text(member.name.c_str());
 		ImGui::NewLine();
-		//ImGui::Indent();
 		renderStruct((StructType*)member.type, fieldP);
-		//ImGui::Unindent();
 		break;
 	}
 	case TypeEnum::Int: 
@@ -60,15 +81,14 @@ void renderProperty(const Member& member, void* structData) {
 
 		break;
 	case TypeEnum::Float:
-		uniqueName++;
-		ImGui::InputFloat(std::to_string(uniqueName).c_str(), (float*)fieldP);
+		ImGui::InputFloat(member.name.c_str(), (float*)fieldP);
 		break;
 	case TypeEnum::Pointer: {
 		renderProperty(Member(member.name, 0, ((PointerType*)member.type)->type), *(void**)fieldP);
 		break;
 	}
 	case TypeEnum::Array: {
-		//ImGui::Indent();
+		//mGui::Indent();
 		std::vector<char> array = *(std::vector<char>*)fieldP;
 		ArrayType* arrayType = (ArrayType*)member.type;
 
@@ -111,7 +131,6 @@ void renderStruct(StructType* type, void* data) {
 }
 
 void renderProperties(Entity* selected) {
-	uniqueName = 0;
 	ImGui::NewLine();
 
 	Type* type = toRealType(selected->type);
@@ -149,7 +168,7 @@ void Editor::Render() {
 			
 			selected->shader = normalShader;
 
-			if (movingSelected || scalingSelected) {
+			if (movingSelected || scalingSelected || rotatingSelected) {
 				if (selected->position.x == 0) {
 					selected->position.x = 0.0001f;
 				}
@@ -159,6 +178,7 @@ void Editor::Render() {
 				if (selected->position.z == 0) {
 					selected->position.z = 0.0001f;
 				}
+
 				glm::mat4 modelMatrix = selected->ModelMatrix();
 				glm::mat4 deltaMatrix;
 
@@ -167,6 +187,10 @@ void Editor::Render() {
 
 				const float* viewMatrixF = glm::value_ptr(viewMatrix);
 				const float* projectionMatrixF = glm::value_ptr(projectionMatrix);
+
+				glm::vec3 scaleBefore = selected->scale;
+				
+		
 				float* modelMatrixF = glm::value_ptr(modelMatrix);
 				float* deltaMatrixF = glm::value_ptr(deltaMatrix);				
 				
@@ -185,6 +209,14 @@ void Editor::Render() {
 				else if (scalingSelected) {
 					mode = ImGuizmo::SCALE;
 				}
+				else if (rotatingSelected) {
+					mode = ImGuizmo::ROTATE;
+				}
+
+				glm::vec3 eulerAngles = glm::eulerAngles(selected->rotation);
+				eulerAngles.x = glm::degrees(eulerAngles.x); //depends on if guizmo works with radians or not
+				eulerAngles.y = glm::degrees(eulerAngles.y);
+				eulerAngles.z = glm::degrees(eulerAngles.z);
 				
 				ImGuizmo::Manipulate(
 					viewMatrixF, 
@@ -195,8 +227,15 @@ void Editor::Render() {
 					deltaMatrixF
 				);
 
-				ImGuizmo::DecomposeMatrixToComponents(modelMatrixF, glm::value_ptr(selected->position), glm::value_ptr(selected->rotation), glm::value_ptr(selected->scale));
+				ImGuizmo::DecomposeMatrixToComponents(modelMatrixF, glm::value_ptr(selected->position), glm::value_ptr(eulerAngles), glm::value_ptr(selected->scale));
+				selected->rotation = glm::quat(glm::vec3(glm::radians(eulerAngles.x), glm::radians(eulerAngles.y), glm::radians(eulerAngles.z))); //might work not sure though
 			}
+		}
+		else {
+			ImGuiIO& io = ImGui::GetIO();
+
+			ImGuizmo::BeginFrame();
+			ImGuizmo::Enable(false);
 		}
 	}
 }
