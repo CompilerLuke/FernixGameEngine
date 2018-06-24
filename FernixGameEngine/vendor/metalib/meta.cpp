@@ -5,12 +5,28 @@
 
 #include "metalib/meta.h"
 
-std::unordered_map<std::string, Type*> StructType::namedTypes; //doesnt initialize before constructor is called, annoying c++
+Type _floatType(Float);
+Type _intType(Int);
+Type _StringType(String);
+
+Type* floatType = &_floatType;
+Type* intType = &_intType;
+Type* stringType = &_StringType;
+
+Type _uintType(UInt);
+Type* uintType = &_uintType;
+
+StructType* NULLType = NULL;
+
+StructType _TypedType("Typed", sizeof(Typed), std::vector<Member>(), &TypedConstructor);
+StructType* TypedType = &_TypedType;
+
+std::unordered_map<std::string, Type*>* StructType::namedTypes = NULL; //doesnt initialize before constructor is called, annoying c++
 
 //std::unordered_map<std::string, Type*> namedTypes;
 
 Type* getNamedType(std::string& name) {
-	return StructType::namedTypes[name];
+	return (*StructType::namedTypes)[name];
 }
 
 Type::Type(TypeEnum type) : type(type) {}
@@ -24,10 +40,11 @@ Forward::Forward(std::string name) : name(name), Type(ForwardRef) {};
 StructType::StructType(std::string name, size_t sizeofStruct, std::vector<Member> members, void* (*constructor)(void* chunk), StructType* inheritsFrom, bool hideInheritedMembers)
 	: name(name), inheritsFrom(inheritsFrom), sizeofStruct(sizeofStruct), members(members), constructor(constructor), hideInheritedMembers(hideInheritedMembers), Type(Struct) {
 
-	static std::unordered_map<std::string, Type*> namedTypes;
-	
+
 	if (inheritsFrom) {
-		if (inheritsFrom->name == "Typed") {
+		std::cout << inheritsFrom->name << std::endl;
+		if (inheritsFrom == TypedType) {
+			std::cout << "is typed" << std::endl;
 			this->isTyped = true;
 		}
 		else {
@@ -40,9 +57,15 @@ StructType::StructType(std::string name, size_t sizeofStruct, std::vector<Member
 		}
 		if (this->isTyped && members.size() > 0) {
 			this->offsetFromTyped = members[0].offset - offsetof(Typed, type) - sizeof(void*);
+			this->members.push_back(Member("ID", offsetof(Typed, ID) + offsetFromTyped, intType, false));
 		}
 	}
-	namedTypes[name] = this;
+
+	if (namedTypes == NULL) {
+		namedTypes = new std::unordered_map<std::string, Type*>();
+	}
+
+	(*namedTypes)[name] = this;
 }
 
 PointerType::PointerType(Type* type) : type(type), Type(Pointer) {};
@@ -53,35 +76,26 @@ void* TypedConstructor(void* chunk) {
 	return new (chunk) Typed(intType);
 }
 
-Type _floatType(Float);
-Type _intType(Int);
-Type _StringType(String);
-
-Type* floatType = &_floatType;
-Type* intType = &_intType;
-Type* stringType = &_StringType;
-
-StructType* NULLType = NULL;
-
-StructType _TypedType("Typed", sizeof(Typed), std::vector<Member>(), &TypedConstructor);
-StructType* TypedType = &_TypedType;
-
 Type* toRealType(Type* type) {
 	switch (type->type) {
 	case TypeEnum::ForwardRef:
 	{
 		Forward * forward = (Forward*)type;
-		return StructType::namedTypes[forward->name];
+		return (*StructType::namedTypes)[forward->name];
 	}
 	default:
 		return type;
 	};
 }
 
+Typed* castToTyped(StructType*  structT, void* data) {
+	return (Typed*)((char*)data + structT->offsetFromTyped);
+}
+
 #include <sstream>
 
-std::string serializeTyped(Typed* typed) {
-	return serialize(typed->type, typed);
+void serializeTyped(Typed* typed, std::string& dirName) {
+	return serialize(typed->type, typed, dirName);
 }
 
 std::string floatTypeToHex(float f)
@@ -98,19 +112,40 @@ std::string floatTypeToHex(float f)
 	return stm.str() + " /*" + std::to_string(f) + "*/ ";
 }
 
+#include <fstream>
 
-std::string serialize(Type* type, void* data) {
-	std::unordered_map<size_t, TypedPointer> pointers;
+void serialize(Type* type, void* data, std::string& dirName) {
+	std::unordered_map<long, TypedPointer> pointers;
 
-	std::string output = serializeWithPointers(type, data, pointers, "");
+	std::ofstream entryPointFile;
+	entryPointFile.open(dirName + "/entrypoint.sg"); //serialized game state
+
+	serializeWithPointers(entryPointFile, type, data, pointers, "");
+
+	std::ofstream pointerFile;
+
+
 	for (std::pair<size_t, TypedPointer> pointerPair : pointers)
 	{
 		TypedPointer pointer = pointerPair.second;
-		output += "\n\n" + std::to_string((size_t)pointer.pointingTo) + " " + std::to_string(pointer.type->type) + " = ";
-		output += serializeWithPointers(pointer.type, pointer.pointingTo, pointers, "", false);
+		pointer.type = toRealType(pointer.type);
+
+		StructType* t = (StructType*)pointer.type;
+		if (pointer.type->type == Struct && t->isTyped) {
+			int ID = castToTyped(t, pointer.pointingTo)->ID;
+			std::cout << ID << std::endl;
+			pointerFile.open(dirName + "/ID_" + std::to_string(ID));
+			pointerFile << ID << " " + std::to_string(pointer.type->type) + " = ";
+			serializeWithPointers(pointerFile, pointer.type, pointer.pointingTo, pointers, "", false);
+			pointerFile.close();
+		}
+		else {
+			entryPointFile << "\n\n" << std::to_string((long)pointer.pointingTo) << " " << pointer.type->type << " = ";
+			serializeWithPointers(entryPointFile, pointer.type, pointer.pointingTo, pointers, "", false);
+		}
 	}
 
-	return output;
+	entryPointFile.close();
 }
 
 size_t sizeOf(Type* type) {
@@ -119,6 +154,8 @@ size_t sizeOf(Type* type) {
 		return sizeof(int);
 	case Float:
 		return sizeof(float);
+	case UInt:
+		return sizeof(unsigned int);
 	case Struct: {
 		StructType * s = (StructType*)type;
 		return ((StructType*)type)->sizeofStruct;
@@ -134,26 +171,51 @@ size_t sizeOf(Type* type) {
 	}
 }
 
+#include "Entity.h"
 
-std::string serializeWithPointers(Type* type, void* data, std::unordered_map<size_t, TypedPointer>& pointers, std::string indentation, bool isFirst) {
+void serializeWithPointers(std::ofstream& file, Type* type, void* data, std::unordered_map<long, TypedPointer>& pointers, std::string indentation, bool isFirst) {
 	type = toRealType(type);
 	switch (type->type) {
 	case TypeEnum::Int:
-		return std::to_string(*(int*)data);
+		file << std::to_string(*(int*)data);
+		break;
+	case TypeEnum::UInt:
+		file << std::to_string(*(unsigned int*)data);
+		break;
 	case TypeEnum::Float:
-		return floatTypeToHex(*(float*)data);
+		file << floatTypeToHex(*(float*)data);
+		break;
 	case TypeEnum::String:
-		return "\"" + *(std::string*)data + "\"";
+		file << "\"" + *(std::string*)data + "\"";
+		break;
 	case TypeEnum::Pointer: {
 		PointerType* pTypeype = (PointerType*)type;
 		void* pointingTo = *(void**)data;
-		pointers[(size_t)pointingTo] = TypedPointer(pointingTo, pTypeype->type);
-		return std::to_string((size_t)pointingTo);
+
+		Type* pointingToType = toRealType(pTypeype->type);
+
+		if (pointingToType->type == Struct && ((StructType*)pointingToType)->isTyped) {
+			Entity* entT = (Entity*)pointingTo;
+			
+			int ID = castToTyped((StructType*)pointingToType, pointingTo)->ID;
+			
+			std::cout << "=====" << std::endl;
+			std::cout << entT->ID << std::endl;
+			std::cout << ID << std::endl;
+			pointers[ID] = TypedPointer(pointingTo, pointingToType);
+			file << "ID_" << ID;
+		}
+		else {
+			pointers[(long)pointingTo] = TypedPointer(pointingTo, pTypeype->type);
+			file << std::to_string((long)pointingTo);
+		}
+		
+		break;
 	}
 	case TypeEnum::Array: {
 
 		ArrayType* aType = (ArrayType*)type;
-		std::string out = std::to_string(aType->type->type) + " [\n";
+		file << std::to_string(aType->type->type) << " [\n";
 		std::vector<char> _array = *(std::vector<char>*)data;
 		char* data = _array.data();
 		indentation += "    ";
@@ -162,102 +224,128 @@ std::string serializeWithPointers(Type* type, void* data, std::unordered_map<siz
 
 		for (unsigned int i = 0; i < size; i++) {
 			void* element = data + (i * sizeOfElement);
-			out += indentation + serializeWithPointers(aType->type, element, pointers, indentation, false) + ",\n";
+			file << indentation;
+			serializeWithPointers(file, aType->type, element, pointers, indentation, false);
+			file << ",\n";
 		}
 		indentation = indentation.substr(0, indentation.size() - 4);
-		return out + indentation + "]";
+		file << indentation << "]";
+		break;
 	}
 	case TypeEnum::Struct:
 	{
 		StructType * structT = (StructType*)type;
-		if (structT->isTyped) {
-			structT = (StructType*)toRealType(((Typed*)data)->type); //for polymorphic objects
+		Entity* entityTyp;
+		if (structT->isTyped) {	
+			Typed* typedType = (Typed*)data;
+			if (!isFirst) {
+				typedType = (Typed*)((char*)data + structT->offsetFromTyped);
+			}
+
+			structT = (StructType*)toRealType(typedType->type); //for polymorphic objects
 			if (isFirst) {
 				data = (char*)data - structT->offsetFromTyped; //when casting down to baseclass without virtual functions, compiler will reduce adress
 			}
+
+			entityTyp = (Entity*)data;
+			
 		}
-		std::string stringVersion = structT->name + " {\n";
+		
+		file << structT->name << " {\n";
 		indentation += "    ";
 		for (unsigned int i = 0; i < structT->members.size(); i++) {
 			Member member = structT->members[i];
 
-			stringVersion += indentation + member.name + " : ";
-			stringVersion += serializeWithPointers(member.type, (char*)data + member.offset, pointers, indentation, false);
-			stringVersion += ",\n";
+			file << indentation << member.name + " : ";
+			serializeWithPointers(file, member.type, (char*)data + member.offset, pointers, indentation, false);
+			file << ",\n";
 		}
 		indentation = indentation.substr(0, indentation.size() - 4);
-		stringVersion += indentation + "}";
-		return stringVersion;
+		file << indentation << "}";
+		break;
 	}
 
 	default:
-		return "Unknown Type";
+		std::cout << "unknown Type" << std::endl;
 	}
 }
 
-std::vector<std::string> tokenize(std::string& stringified) {
-	std::vector<std::string> tokens;
+void pushBackIfNotEmpty(std::vector <std::string>& tokens, std::string* tok, std::vector<long>& lookedUpFiles) {
+	if (tok->length() > 0) {
+		if (tok->length() > 3 && tok[0] == "I" && tok[1] == "D" && tok[2] == "_") {
+			tok->erase(0, 3);
+
+			long id = std::stol(*tok);
+
+			if (std::find(std::begin(lookedUpFiles), std::end(lookedUpFiles), id) != std::end(lookedUpFiles)) {
+				lookedUpFiles.push_back(id);
+			}
+		}
+
+		tokens.push_back(*tok);
+		*tok = "";
+	}
+}
+
+void tokenize(std::vector <std::string>& tokens, std::vector<long> &lookedUpFiles, std::ifstream& file, std::string& dirName, int index) {
 	std::string tok = "";
 	bool inString = false;
 	bool inComment = false;
-	for (unsigned int i = 0; i < stringified.size(); i++) {
-		char t = stringified[i];
-		if (!inString && !inComment) {
-			if (t == ' ' || t == ' \t' || t == '\n') {
-				if (tok.length() > 0) {
-					tokens.push_back(tok);
-					tok = "";
+
+	std::string stringified;
+
+	while (getline(file, stringified)) {
+		for (unsigned int i = 0; i < stringified.size(); i++) {
+			char t = stringified[i];
+			if (!inString && !inComment) {
+				if (t == ' ' || t == ' \t' || t == '\n') {
+					pushBackIfNotEmpty(tokens, &tok, lookedUpFiles);
+				}
+				else if (t == '"') {
+					pushBackIfNotEmpty(tokens, &tok, lookedUpFiles);
+					inString = true;
+				}
+				else if (t == '/' && i + 1 < stringified.size() && stringified[i + 1] == '*') {
+					pushBackIfNotEmpty(tokens, &tok, lookedUpFiles);
+					inComment = true;
+					i++;
+				}
+				else if (t == '{' || t == '}' || t == '[' || t == ']' || t == ',' || t == ':' || t == '=') {
+					pushBackIfNotEmpty(tokens, &tok, lookedUpFiles);
+					tokens.push_back(std::string(1, t));
+				}
+				else {
+					tok += t;
 				}
 			}
-			else if (t == '"') {
-				if (tok.length() > 0) {
+			else if (inString) {
+				if (t == '"') {
 					tokens.push_back(tok);
 					tok = "";
+					inString = false;
 				}
-				inString = true;
-			}
-			else if (t == '/' && i + 1 < stringified.size() && stringified[i + 1] == '*') {
-				if (tok.length() > 0) {
-					tokens.push_back(tok);
-					tok = "";
+				else {
+					tok += t;
 				}
-				inComment = true;
-				i++;
-			}
-			else if (t == '{' || t == '}' || t == '[' || t == ']' || t == ',' || t == ':' || t == '=') {
-				if (tok.length() > 0) {
-					tokens.push_back(tok);
-					tok = "";
-				}
-				tokens.push_back(std::string(1, t));
 			}
 			else {
-				tok += t;
-			}
-		}
-		else if (inString) {
-			if (t == '"') {
-				tokens.push_back(tok);
-				tok = "";
-				inString = false;
-			}
-			else {
-				tok += t;
-			}
-		}
-		else {
-			if (t == '*' && i + 1 < stringified.size() && stringified[i + 1] == '/') {
-				inComment = false;
-				i++;
+				if (t == '*' && i + 1 < stringified.size() && stringified[i + 1] == '/') {
+					inComment = false;
+					i++;
+				}
 			}
 		}
 	}
 
-	if (tok.length() > 0) {
-		tokens.push_back(tok);
+	pushBackIfNotEmpty(tokens, &tok, lookedUpFiles);
+
+	if (lookedUpFiles.size() > index) {
+		std::ifstream file;
+		file.open(dirName + "\ID_" + std::to_string(lookedUpFiles[index]));
+		tokenize(tokens, lookedUpFiles, file, dirName, index+1);
+		file.close();
 	}
 
-	return tokens;
 }
 
 void* parse(StateOfParser& state) {
@@ -326,6 +414,8 @@ void setFieldTo(Type* type, StateOfParser& state, void* pointerToField) {
 	case Int:
 		*((int*)pointerToField) = std::stoi(state.tokenized[state.iter]);
 		break;
+	case UInt:
+		*((unsigned int*)pointerToField) = std::stoul(state.tokenized[state.iter]);
 	case Float:
 		*((float*)pointerToField) = hexTypeo_float(state.tokenized[state.iter]);
 		break;
@@ -369,7 +459,7 @@ SizeAndType getTypeFromEnum(size_t _type, StateOfParser& state) {
 	StructType* structType = NULL;
 
 	if (_type == Struct) {
-		structType = (StructType*)StructType::namedTypes[nameType]; //polymorphism
+		structType = (StructType*)(*StructType::namedTypes)[nameType]; //polymorphism
 	}
 
 	size_t sizeofNeededMemory = 0;
@@ -383,6 +473,10 @@ SizeAndType getTypeFromEnum(size_t _type, StateOfParser& state) {
 	case Float:
 		sizeofNeededMemory = sizeof(float);
 		type = floatType;
+		break;
+	case UInt:
+		sizeofNeededMemory = sizeof(unsigned int);
+		type = uintType;
 		break;
 	case Struct:
 		sizeofNeededMemory = structType->sizeofStruct;
@@ -540,18 +634,22 @@ void getTypeOfPointers(StateOfParser& state) {
 	}
 }
 
-void* deserialize(std::string& stringified) {
-	std::vector<std::string> tokenized = tokenize(stringified);
-	std::unordered_map<size_t, std::string> typeOfPointers;
-	std::unordered_map<size_t, void*> allocatedPointers;
+
+void* deserialize(std::string& dirName) {
+	std::ifstream entryFile;
+	entryFile.open(dirName + "/entrypoint.gs", std::ios::in);
+	
+	std::vector<std::string> tokenized;
+	std::vector<long> lookedUpFiles;
+
+	tokenize(tokenized, lookedUpFiles, entryFile, dirName);
+
+	entryFile.close();
+
+	std::unordered_map<long, std::string> typeOfPointers;
+	std::unordered_map<long, void*> allocatedPointers;
 
 	StateOfParser state{ 0, tokenized, typeOfPointers, allocatedPointers };
-
-	std::string joinedTokens = "";
-	for (unsigned int i = 0; i < tokenized.size(); i++) {
-		joinedTokens += tokenized[i] + "|";
-	}
-	//std::cout << joinedTokens << std::endl;
 
 	unsigned int iter = 0;
 

@@ -168,9 +168,9 @@
     <ClInclude Include="headers\Input.h" />
     <ClInclude Include="headers\Mesh.h" />
     <ClInclude Include="headers\Model.h" />
+    <ClInclude Include="headers\Render.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Property.h" />
-    <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="vendor\imgizmo\ImGuizmo.h" />

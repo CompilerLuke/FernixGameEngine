@@ -29,22 +29,29 @@ public:
 	bool inGame = true;
 
 	Render(int,int);
+	Render();
+
+	void SetLevelEntity(Entity* entity);
 
 	void RenderFrame();
 	void Clear();
-	void AddEntity(Entity *entity);
 	void AddPointLight(PointLight *light);
 	void SetDirLight(DirLight* light);
 	void SetLightInfo(Shader s);
-	void SetInGame(bool inGame);
-	void Init();
+	void SetInGame(bool inGame, Entity* entity = NULL);
+	void Init();	
+	
+	Entity* level;
 
 	~Render();
 private:
 	float lastFrame = 0.0f;
 
-	std::vector<Entity*> entities;
+
 	std::vector<PointLight*> pointLights;
 	DirLight* dirLight;
 };
+
+class StructType;
+extern StructType* RenderType;
 

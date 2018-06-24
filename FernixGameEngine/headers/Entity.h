@@ -30,9 +30,13 @@ struct Entity : Typed {
 	virtual void OnEnterEditor();
 	virtual void OnEnterGame();
 
+	void NewID();
+
 	glm::mat4 ModelMatrix();
 
 	bool RunningGame();
+
+	void SetParent(Entity* newParent);
 
 	Entity(Model* model, Shader* shader);
 	Entity();

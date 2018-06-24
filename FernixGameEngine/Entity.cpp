@@ -23,6 +23,7 @@ DEFTYPE_NAMESPACE(glm, vec3, NULL,
 );
 
 DEFTYPE_NAMESPACE(glm, quat, NULL,
+	MEMBER(glm::quat, w, float),
 	MEMBER(glm::quat, x, float),
 	MEMBER(glm::quat, y, float),
 	MEMBER(glm::quat, z, float),
@@ -32,7 +33,9 @@ DEFTYPE(Entity, Typed,
 	MEMBER(Entity, position, glm_vec3),
 	MEMBER(Entity, rotation, glm_quat),
 	MEMBER(Entity, scale, glm_vec3),
-	//MEMBER_NT(Entity, model, POINTER(Model))
+	//MEMBER_NT(Entity, model, POINTER(Model)),
+	MEMBER_NT(Entity, children, ARRAY_NT(POINTER_NT(FORWARD(Entity)))),
+	MEMBER_NT(Entity, ctx, POINTER(Render))
 );
 
 glm::mat4 Entity::ModelMatrix() {
@@ -55,16 +58,43 @@ glm::mat4 Entity::ModelMatrix() {
 	return matrix; //check if this doesnt cause some kind of scope error
 }
 
-Entity::Entity(Model* model, Shader* shader) : Typed(EntityType)
+Entity::Entity(Model* model, Shader* shader) : Typed(FORWARD(Entity))
 {
 	model = model;
 	shader = shader;
 }
 
-Entity::Entity() : Typed(EntityType) {
+Entity::Entity() : Typed(FORWARD(Entity)) {
 	model = NULL;
 	shader = NULL;
 	parent = NULL;
+}
+
+unsigned int ID_NUM = 0;
+void Entity::NewID() {
+	this->ID = ++ID_NUM;
+}
+
+void Entity::SetParent(Entity* newParent) {
+	if (parent) {
+		for (unsigned int i = 0; i < parent->children.size(); i++) {
+			if (parent->children[i] == this) {
+				parent->children[i] = parent->children[parent->children.size() - 1];
+				parent->children.resize(parent->children.size() - 1);
+				break;
+			}
+		}
+	}
+
+	if (newParent->ctx) {
+		ctx = newParent->ctx;
+	}
+	else if (ctx && !newParent->ctx) {
+		parent->ctx = ctx;
+	}
+	
+	parent = newParent;
+	newParent->children.push_back(this);
 }
 
 void Entity::SetShaderProps(Shader shader) {

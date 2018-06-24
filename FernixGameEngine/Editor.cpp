@@ -8,6 +8,8 @@
 #include "imgizmo/imguizmo.h"
 #include "metalib/meta.h"
 
+DEFTYPE(Editor, Entity);
+
 class Input;
 extern Input input;
 
@@ -30,7 +32,7 @@ void Editor::Update() {
 	}
 	if (input.keyPressed(GLFW_KEY_T)) { //cant use S because it is used for movement
 		movingSelected = false;
-		scalingSelected = true;
+		scalingSelected = true; 
 		rotatingSelected = false;
 	}
 	if (input.keyPressed(GLFW_KEY_R)) {
@@ -50,11 +52,13 @@ void renderStruct(StructType* type, void* data);
 void renderProperty(const Member& member, void* structData) {
 	void* fieldP = (char*)structData + member.offset;
 
+	if (member.name == "children") { return;  }
+
 	switch (member.type->type) {
 	case TypeEnum::Struct: {
 		StructType* structT = (StructType*)member.type;
 		if (structT->name == "glm_vec3") {
-			ImGui::InputFloat3(member.name.c_str(), glm::value_ptr(*(glm::vec3*)fieldP));
+			ImGui::InputFloat3(member.name.c_str(), glm::value_ptr(*(glm::vec3*)fieldP)); //for some reason cannot edit scale, very wierd indeed
 			return;
 		}
 		if (structT->name == "glm_quat") {
@@ -143,27 +147,33 @@ void renderProperties(Entity* selected) {
 	renderStruct((StructType*)type, selected);
 }
 
+inline bool inBetween(float num, float upper, float lower) {
+	return num <= upper && num >= lower;
+}
+
 void Editor::Render() {					
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	
 	if (!ctx->inGame) {
-		if (selected) {
+		if (selected) {			
+			glm::vec3 scaleBefore = selected->scale;
+
 			renderProperties(selected);
 
 			Shader* normalShader = selected->shader;
 
-			glm::vec3 scale = selected->scale;
+			glm::vec3 color(1, 0.7, 0);
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			selected->shader = this->shader;
 			selected->shader->use();
-			selected->shader->setVec3("color", glm::vec3(0.5, 0.5, 0));
+			selected->shader->setVec3("color", color);
 
-			selected->scale = glm::vec3(scale.x * 1.001, scale.y * 1.001, scale.z * 1.001);
+			selected->scale = glm::vec3(scaleBefore.x * 1.001, scaleBefore.y * 1.001, scaleBefore.z * 1.001);
 			selected->Render();
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-			selected->scale = scale;
+			selected->scale = scaleBefore;
 
 			
 			selected->shader = normalShader;
@@ -187,8 +197,6 @@ void Editor::Render() {
 
 				const float* viewMatrixF = glm::value_ptr(viewMatrix);
 				const float* projectionMatrixF = glm::value_ptr(projectionMatrix);
-
-				glm::vec3 scaleBefore = selected->scale;
 				
 		
 				float* modelMatrixF = glm::value_ptr(modelMatrix);
@@ -227,9 +235,17 @@ void Editor::Render() {
 					deltaMatrixF
 				);
 
-				ImGuizmo::DecomposeMatrixToComponents(modelMatrixF, glm::value_ptr(selected->position), glm::value_ptr(eulerAngles), glm::value_ptr(selected->scale));
-				selected->rotation = glm::quat(glm::vec3(glm::radians(eulerAngles.x), glm::radians(eulerAngles.y), glm::radians(eulerAngles.z))); //might work not sure though
+				glm::vec3 newScale = selected->scale;
+
+				ImGuizmo::DecomposeMatrixToComponents(modelMatrixF, glm::value_ptr(selected->position), glm::value_ptr(eulerAngles), glm::value_ptr(newScale));
+				selected->rotation = glm::quat(glm::vec3(glm::radians(eulerAngles.x), glm::radians(eulerAngles.y), glm::radians(eulerAngles.z)));
+
+				if (!inBetween(newScale.x, 0.001, -0.001) && !inBetween(newScale.y, 0.001, -0.001) && !inBetween(newScale.z, 0.001, -0.001)) {
+					selected->scale = newScale;
+				}
+
 			}
+
 		}
 		else {
 			ImGuiIO& io = ImGui::GetIO();

@@ -6,6 +6,8 @@
 #include <cstddef>
 #include <unordered_map>
 
+#include <fstream>
+
 enum TypeEnum {
 	Struct,
 	ForwardRef,
@@ -19,7 +21,7 @@ enum TypeEnum {
 	Bool,
 	String,
 	Pointer,
-	Array
+	Array,
 };
 
 struct Type {
@@ -54,12 +56,13 @@ struct Forward : Type {
 };
 
 struct Typed {
+	int ID;
 	Type* type;
 	Typed(Type* type);
 };
 
 struct StructType : Type {
-	static std::unordered_map<std::string, Type*> namedTypes;
+	static std::unordered_map<std::string, Type*>* namedTypes;
 	
 	std::string name;
 	std::vector<Member> members;
@@ -78,6 +81,7 @@ extern Type* floatType;
 extern Type* intType;
 extern Type* stringType;
 extern StructType* NULLType;
+extern Type* uintType;
 
 extern void* TypedConstructor(void* chunk);
 extern StructType* TypedType;
@@ -95,17 +99,18 @@ struct TypedPointer : Typed {
 struct StateOfParser {
 	unsigned int iter;
 	std::vector<std::string>& tokenized;
-	std::unordered_map<size_t, std::string>& nameOfTypedPointers;
-	std::unordered_map<size_t, void*>& allocatedPointers;
+	std::unordered_map<long, std::string>& nameOfTypedPointers;
+	std::unordered_map<long, void*>& allocatedPointers;
+	std::string dirName;
 };
 
-std::string serializeTyped(Typed* typed);
+void serializeTyped(Typed* typed, std::string& dir);
 
-std::string serializeWithPointers(Type* type, void* data, std::unordered_map<size_t, TypedPointer>& pointers, std::string indentation = "", bool isFirst = true);
+void serializeWithPointers(std::ofstream& file, Type* type, void* data, std::unordered_map<long, TypedPointer>& pointers, std::string indentation = "", bool isFirst = true);
 
-std::string serialize(Type* type, void* data);
+void serialize(Type* type, void* data, std::string& dir);
 
-std::vector<std::string> tokenize(std::string& stringified);
+void tokenize(std::vector <std::string>& tokens, std::vector<long> &lookedUpFiles, std::ifstream& file, std::string& dirName, int index = 0);
 
 void* parsePointer(StateOfParser& state);
 void* parseStruct(StateOfParser& state, void* initInField = NULL);
@@ -130,5 +135,4 @@ size_t sizeOf(Type* type);
 #define ARRAY_NT(type) new ArrayType(type)
 
 
-#define FORWARD(type) new Forward(#type##Type)
-#define FORWARD_NT(type) new Forward(#type)
+#define FORWARD(type) new Forward(#type)

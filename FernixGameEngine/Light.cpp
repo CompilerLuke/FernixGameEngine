@@ -20,6 +20,6 @@ void PointLight::setUniforms(unsigned int id, Shader shader) {
 
 PointLight::PointLight(glm::vec3 color) : Light(color) {}
 DirLight::DirLight(glm::vec3 color) : Light(color) {}
-Light::Light(glm::vec3 color) {
+Light::Light(glm::vec3 color) : Entity() {
 	color = color;
 }

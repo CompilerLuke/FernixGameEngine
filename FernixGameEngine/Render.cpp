@@ -4,9 +4,18 @@
 #include "Input.h"
 #include "Shader.h"
 #include <iostream>
+#include "metalib/meta.h"
+
+DEFTYPE(Render, NULL,
+	MEMBER(Render, SCR_WIDTH, uint),
+	MEMBER(Render, SCR_HEIGHT, uint),
+	MEMBER_NT(Render, POINTER(Camera)),
+	MEMBER_NT(Render, POINTER(Skybox)),
+	MEMBER_NT(Render, POINTER(Editor))
+);
 
 //timing
-float deltaTime = 0.0f;	// Time between current frame and last frame
+float deltaTime = 0.0f;	// Time between current frame and last frame, might be many render and want the same delta for all 
 float lastFrame = 0.0f; // Time of last frame
 
 //render doesnt initialize window
@@ -14,6 +23,8 @@ float lastFrame = 0.0f; // Time of last frame
 struct Entity;
 class Camera;
 class Shader;
+
+Render::Render() {};
 
 Render::Render(int SCR_WIDTH, int SCR_HEIGHT)
 {
@@ -55,17 +66,19 @@ void Render::SetLightInfo(Shader shader) {
 	shader.setInt("NR_POINT_LIGHTS", pointLights.size());
 }
 
-void Render::SetInGame(bool inGame) {
-	
+void Render::SetInGame(bool inGame, Entity* entity) {		
+	if (entity == NULL) { entity = level; }
 	if (inGame && !this->inGame) {
-		for (int i = 0; i < entities.size(); i++) {
-			entities[i]->OnEnterGame();
+		for (int i = 0; i < entity->children.size(); i++) {
+			entity->children[i]->OnEnterGame();
 		}
+		entity->OnEnterGame();
 	}
 	else if (!inGame && this->inGame) {
-		for (int i = 0; i < entities.size(); i++) {
-			entities[i]->OnEnterEditor();
+		for (int i = 0; i < entity->children.size(); i++) {
+			entity->children[i]->OnEnterEditor();
 		}
+		entity->OnEnterEditor();
 	}
 	this->inGame = inGame;
 }
@@ -73,29 +86,39 @@ void Render::SetInGame(bool inGame) {
 long ticks = 0;
 double average = 0;
 
+void updateSceneGraph(Entity* entity) {
+	for (unsigned int i = 0; i < entity->children.size(); i++) {
+		updateSceneGraph(entity->children[i]);
+	}
+	entity->Update();
+}
+
+void renderSceneGraph(Entity* entity) {
+	for (unsigned int i = 0; i < entity->children.size(); i++) {
+		renderSceneGraph(entity->children[i]);
+	}
+	entity->Render();
+}
+
 void Render::RenderFrame() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
 	if (this->inGame) {
-		for (int i = 0; i < entities.size(); i++) {
-			entities[i]->Update();
-		}
+		updateSceneGraph(level);
 	}
 	else if (this->editor) {
 		editor->Update();
 		camera->Update();
 	}
 
-	for (int i = 0; i < entities.size(); i++) {
-		entities[i]->Render();
-	}
+	renderSceneGraph(level);
 }
 
-void Render::AddEntity(Entity* entity) { //assume entity is heap allocated, and will be deleted
-	entity->ctx = this;
-	entities.push_back(entity);
+void Render::SetLevelEntity(Entity* level) {
+	this->level = level;
+	level->ctx = this;
 }
 
 Render::~Render()

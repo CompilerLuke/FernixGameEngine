@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "AssetManager.h"
 
-Skybox::Skybox() : skybox("assets/shaders/skybox.vert", "assets/shaders/skybox.frag") {}
+Skybox::Skybox() : skybox("assets/shaders/skybox.vert", "assets/shaders/skybox.frag"), Entity() {}
 
 TexturesForIBL setupIBL();
 
