@@ -11,6 +11,14 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_glfw.h"
+#include "metalib/meta.h"
+
+DEFTYPE(Window, NULL,
+	MEMBER(Window, title, string),
+	MEMBER(Window, vSync, bool),
+	MEMBER(Window, SCR_HEIGHT, int),
+	MEMBER(Window, SCR_WIDTH, int),
+);
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	Input* input = (Input*)glfwGetWindowUserPointer(window);

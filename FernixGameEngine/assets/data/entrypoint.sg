@@ -22,5 +22,22 @@ Entity {
         ID_3,
         ID_4,
     ],
+    ctx : 5938976,
     ID : 2,
+}
+
+5938976 0 = Render {
+    SCR_WIDTH : 3840,
+    SCR_HEIGHT : 2160,
+    camera : 5938736,
+    skybox : 13629288,
+    editor : ID_4,
+}
+
+13629288 0 = Skybox {
+}
+
+5938736 0 = Camera {
+    MovementSpeed : 40800000 /*4.000000*/ ,
+    MouseSensitivity : 3C23D70A /*0.010000*/ ,
 }

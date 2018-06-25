@@ -169,10 +169,10 @@
     <ClInclude Include="headers\Mesh.h" />
     <ClInclude Include="headers\Model.h" />
     <ClInclude Include="headers\Render.h" />
+    <ClInclude Include="headers\Skybox.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Skybox.h" />
     <ClInclude Include="vendor\imgizmo\ImGuizmo.h" />
     <ClInclude Include="vendor\imgui\imconfig.h" />
     <ClInclude Include="vendor\imgui\imgui.h" />

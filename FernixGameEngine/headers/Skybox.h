@@ -39,3 +39,6 @@ void renderSphere();
 // -------------------------------------------------
 
 void renderCube();
+
+class StructType;
+extern StructType* SkyboxType;

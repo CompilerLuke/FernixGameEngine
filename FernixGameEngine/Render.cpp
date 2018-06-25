@@ -5,13 +5,14 @@
 #include "Shader.h"
 #include <iostream>
 #include "metalib/meta.h"
+#include "Skybox.h"
 
 DEFTYPE(Render, NULL,
 	MEMBER(Render, SCR_WIDTH, uint),
 	MEMBER(Render, SCR_HEIGHT, uint),
-	MEMBER_NT(Render, POINTER(Camera)),
-	MEMBER_NT(Render, POINTER(Skybox)),
-	MEMBER_NT(Render, POINTER(Editor))
+	MEMBER_NT(Render, camera, POINTER(Camera)),
+	MEMBER_NT(Render, skybox, POINTER(Skybox)),
+	MEMBER_NT(Render, editor, POINTER(Editor)),
 );
 
 //timing

@@ -8,14 +8,13 @@ class Input;
 class Window
 {
 public:
-private:
 	const char* title;
 	bool vSync;
 	bool fullscreen;
 	
 	GLFWwindow* window;
 	Input* input;
-public:
+
 	int SCR_WIDTH, SCR_HEIGHT;
 
 	bool getKeyDown(int key);
@@ -26,7 +25,11 @@ public:
 	void gameLoop(void (&func)());
 
 	Window(const char* title, Input* input, int width, int height, bool vsync = true, bool fullscreen = false);
+	Window() {};
+	
 	void Init();
 	~Window();
 };
 
+class StructType;
+extern StructType* WindowType;

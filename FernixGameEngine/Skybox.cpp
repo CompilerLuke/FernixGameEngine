@@ -4,6 +4,9 @@
 
 #include "Entity.h"
 #include "AssetManager.h"
+#include "metalib/meta.h"
+
+DEFTYPE(Skybox, NULL);
 
 Skybox::Skybox() : skybox("assets/shaders/skybox.vert", "assets/shaders/skybox.frag"), Entity() {}
 

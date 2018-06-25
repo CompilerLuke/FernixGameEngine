@@ -82,6 +82,7 @@ extern Type* intType;
 extern Type* stringType;
 extern StructType* NULLType;
 extern Type* uintType;
+extern Type* boolType;
 
 extern void* TypedConstructor(void* chunk);
 extern StructType* TypedType;

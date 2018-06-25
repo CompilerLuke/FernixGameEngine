@@ -8,10 +8,12 @@
 Type _floatType(Float);
 Type _intType(Int);
 Type _StringType(String);
+Type _boolType(Bool);
 
 Type* floatType = &_floatType;
 Type* intType = &_intType;
 Type* stringType = &_StringType;
+Type* boolType = &_boolType;
 
 Type _uintType(UInt);
 Type* uintType = &_uintType;
@@ -44,7 +46,6 @@ StructType::StructType(std::string name, size_t sizeofStruct, std::vector<Member
 	if (inheritsFrom) {
 		std::cout << inheritsFrom->name << std::endl;
 		if (inheritsFrom == TypedType) {
-			std::cout << "is typed" << std::endl;
 			this->isTyped = true;
 		}
 		else {
@@ -54,6 +55,7 @@ StructType::StructType(std::string name, size_t sizeofStruct, std::vector<Member
 				Member member = members[i];
 				this->members.push_back(Member(member.name, member.offset, member.type, true));
 			}
+			this->offsetFromTyped = inheritsFrom->offsetFromTyped;
 		}
 		if (this->isTyped && members.size() > 0) {
 			this->offsetFromTyped = members[0].offset - offsetof(Typed, type) - sizeof(void*);
@@ -124,24 +126,42 @@ void serialize(Type* type, void* data, std::string& dirName) {
 
 	std::ofstream pointerFile;
 
+	std::vector<long> alreadyOutputed;
+	std::vector<long> alreadyOutputedWithID;
 
-	for (std::pair<size_t, TypedPointer> pointerPair : pointers)
-	{
-		TypedPointer pointer = pointerPair.second;
-		pointer.type = toRealType(pointer.type);
+	unsigned int sizeOfPointers = 0;
 
-		StructType* t = (StructType*)pointer.type;
-		if (pointer.type->type == Struct && t->isTyped) {
-			int ID = castToTyped(t, pointer.pointingTo)->ID;
-			std::cout << ID << std::endl;
-			pointerFile.open(dirName + "/ID_" + std::to_string(ID));
-			pointerFile << ID << " " + std::to_string(pointer.type->type) + " = ";
-			serializeWithPointers(pointerFile, pointer.type, pointer.pointingTo, pointers, "", false);
-			pointerFile.close();
-		}
-		else {
-			entryPointFile << "\n\n" << std::to_string((long)pointer.pointingTo) << " " << pointer.type->type << " = ";
-			serializeWithPointers(entryPointFile, pointer.type, pointer.pointingTo, pointers, "", false);
+	while (sizeOfPointers < pointers.size()) {
+		sizeOfPointers = pointers.size();
+		
+		for (std::pair<long, TypedPointer> pointerPair : pointers)
+		{
+			if (sizeOfPointers != 0) {
+				if (std::find(alreadyOutputed.begin(), alreadyOutputed.end(), pointerPair.first) != alreadyOutputed.end()) { //@cleanup -linear search which could be very slow
+					continue;
+				}
+				if (std::find(alreadyOutputedWithID.begin(), alreadyOutputedWithID.end(), pointerPair.first) != alreadyOutputedWithID.end()) {
+					continue;
+				}
+			}
+			TypedPointer pointer = pointerPair.second;
+			pointer.type = toRealType(pointer.type);
+
+			StructType* t = (StructType*)pointer.type;
+			if (pointer.type->type == Struct && t->isTyped) {
+				int ID = castToTyped(t, pointer.pointingTo)->ID;
+				alreadyOutputedWithID.push_back(ID);
+
+				pointerFile.open(dirName + "/ID_" + std::to_string(ID));
+				pointerFile << ID << " " + std::to_string(pointer.type->type) + " = ";
+				serializeWithPointers(pointerFile, pointer.type, pointer.pointingTo, pointers, "", false);
+				pointerFile.close();
+			}
+			else {
+				alreadyOutputed.push_back((long)pointer.pointingTo);
+				entryPointFile << "\n\n" << std::to_string((long)pointer.pointingTo) << " " << pointer.type->type << " = ";
+				serializeWithPointers(entryPointFile, pointer.type, pointer.pointingTo, pointers, "", false);
+			}
 		}
 	}
 
@@ -198,10 +218,7 @@ void serializeWithPointers(std::ofstream& file, Type* type, void* data, std::uno
 			Entity* entT = (Entity*)pointingTo;
 			
 			int ID = castToTyped((StructType*)pointingToType, pointingTo)->ID;
-			
-			std::cout << "=====" << std::endl;
-			std::cout << entT->ID << std::endl;
-			std::cout << ID << std::endl;
+		
 			pointers[ID] = TypedPointer(pointingTo, pointingToType);
 			file << "ID_" << ID;
 		}
@@ -237,6 +254,7 @@ void serializeWithPointers(std::ofstream& file, Type* type, void* data, std::uno
 		StructType * structT = (StructType*)type;
 		Entity* entityTyp;
 		if (structT->isTyped) {	
+			entityTyp = (Entity*)data;
 			Typed* typedType = (Typed*)data;
 			if (!isFirst) {
 				typedType = (Typed*)((char*)data + structT->offsetFromTyped);

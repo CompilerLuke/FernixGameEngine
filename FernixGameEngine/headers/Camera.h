@@ -58,4 +58,8 @@ private:
 	void updateCameraVectors();
 };
 
+class StructType;
+
+extern StructType* CameraType;
+
 #endif

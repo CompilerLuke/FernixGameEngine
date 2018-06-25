@@ -9,6 +9,13 @@
 #include "Input.h"
 #include "Render.h"
 
+#include "metalib/meta.h"
+
+DEFTYPE(Camera, Entity,
+	MEMBER(Camera,  MovementSpeed, float),
+	MEMBER(Camera, MouseSensitivity, float),
+);
+
 extern Input input;
 
 Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Entity(), Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
