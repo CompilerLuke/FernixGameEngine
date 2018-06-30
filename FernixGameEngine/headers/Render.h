@@ -7,11 +7,10 @@
 
 struct Entity;
 class Camera;
-class Light;
-class PointLight;
-class DirLight;
+
 class Skybox;
 struct Editor;
+class Window;
 
 class Render
 {
@@ -22,7 +21,7 @@ public:
 	Camera* camera;
 	Skybox* skybox;
 	Editor* editor;
-	GLFWwindow* window;
+	Window* window;
 
 	float deltaTime = 0.0f;
 
@@ -44,14 +43,16 @@ public:
 	Entity* level;
 
 	~Render();
+	
+	std::vector<PointLight*> pointLights;
+	DirLight* dirLight;
 private:
 	float lastFrame = 0.0f;
 
 
-	std::vector<PointLight*> pointLights;
-	DirLight* dirLight;
+	
 };
 
-class StructType;
+struct StructType;
 extern StructType* RenderType;
 

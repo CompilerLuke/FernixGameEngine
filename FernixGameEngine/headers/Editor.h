@@ -17,5 +17,5 @@ struct Editor : Entity {
 	Editor();
 };
 
-class StructType;
+struct StructType;
 extern StructType* EditorType;

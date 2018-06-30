@@ -12,8 +12,9 @@
 #include "metalib/meta.h"
 
 DEFTYPE(Camera, Entity,
-	MEMBER(Camera,  MovementSpeed, float),
+	MEMBER(Camera, MovementSpeed, float),
 	MEMBER(Camera, MouseSensitivity, float),
+	MEMBER(Camera, Zoom, float),
 );
 
 extern Input input;
@@ -25,7 +26,7 @@ Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, glm::vec3 position, glm::vec3 
 	Yaw = yaw;
 	Pitch = pitch;
 	projection = glm::perspective(glm::radians(Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-	updateCameraVectors();
+	//updateCameraVectors();
 	this->position = position;
 }
 
@@ -37,6 +38,10 @@ Camera::Camera(float SCR_WIDTH, float SCR_HEIGHT, float posX, float posY, float 
 	Pitch = pitch;
 	projection = glm::perspective(glm::radians(Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	position = Position;
+	//updateCameraVectors();
+}
+
+void Camera::Init() {
 	updateCameraVectors();
 }
 

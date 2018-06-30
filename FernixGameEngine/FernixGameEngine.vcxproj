@@ -166,11 +166,12 @@
     <ClInclude Include="headers\Editor.h" />
     <ClInclude Include="headers\Entity.h" />
     <ClInclude Include="headers\Input.h" />
+    <ClInclude Include="headers\Light.h" />
     <ClInclude Include="headers\Mesh.h" />
     <ClInclude Include="headers\Model.h" />
     <ClInclude Include="headers\Render.h" />
     <ClInclude Include="headers\Skybox.h" />
-    <ClInclude Include="Light.h" />
+    <ClInclude Include="headers\Window.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="vendor\imgizmo\ImGuizmo.h" />
@@ -183,7 +184,6 @@
     <ClInclude Include="vendor\imgui\stb_textedit.h" />
     <ClInclude Include="vendor\imgui\stb_truetype.h" />
     <ClInclude Include="vendor\metalib\meta.h" />
-    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="D:\User\Downloads\stylzed castle texture.jpg" />

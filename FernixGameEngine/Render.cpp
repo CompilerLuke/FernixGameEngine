@@ -6,6 +6,8 @@
 #include <iostream>
 #include "metalib/meta.h"
 #include "Skybox.h"
+#include "Window.h"
+#include "Light.h"
 
 DEFTYPE(Render, NULL,
 	MEMBER(Render, SCR_WIDTH, uint),
@@ -13,6 +15,9 @@ DEFTYPE(Render, NULL,
 	MEMBER_NT(Render, camera, POINTER(Camera)),
 	MEMBER_NT(Render, skybox, POINTER(Skybox)),
 	MEMBER_NT(Render, editor, POINTER(Editor)),
+	MEMBER_NT(Render, window, POINTER(Window)),
+	MEMBER_NT(Render, pointLights, ARRAY_NT(POINTER(PointLight))),
+	MEMBER_NT(Render, dirLight, POINTER(DirLight)),
 );
 
 //timing
@@ -33,6 +38,13 @@ Render::Render(int SCR_WIDTH, int SCR_HEIGHT)
 	this->SCR_HEIGHT = SCR_HEIGHT;
 }
 
+void initSceneGraph(Entity* e) {
+	e->Init();
+	for (unsigned int i = 0; i < e->children.size(); i++) {
+		e->children[i]->Init();
+	}
+}
+
 void Render::Init() {
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_BACK);
@@ -40,6 +52,8 @@ void Render::Init() {
 	glDepthFunc(GL_LESS);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+	initSceneGraph(level);
 }
 
 void Render::Clear() {

@@ -51,6 +51,7 @@ public:
 	glm::mat4 GetViewMatrix();
 
 	void Update() override;
+	void Init() override;
 	
 private:
 	glm::mat4 projection;
@@ -58,8 +59,7 @@ private:
 	void updateCameraVectors();
 };
 
-class StructType;
-
+struct StructType;
 extern StructType* CameraType;
 
 #endif
